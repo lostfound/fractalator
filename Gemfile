@@ -39,8 +39,11 @@ gem "email_spec", :group => :test
 gem "cucumber-rails", :group => :test, :require => false
 gem "capybara", :group => :test
 
+#CSS
+gem 'bootstrap-sass'
 #USERS
 gem 'devise'
+gem 'protected_attributes'
 
 
 # Use ActiveModel has_secure_password
