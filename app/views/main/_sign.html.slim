@@ -1,0 +1,35 @@
+fieldset
+  legend
+    dl.tabs data-tab=""
+      dd class="#{(%w[index sign_in].include?action_name)?'active':''}"
+        a href="#sign_in_tab" Sign In
+      dd class="#{'sign_up' == action_name ? 'active' : ''}"
+        a href="#sign_up_tab" Sign Up
+  .tabs-content
+    .content#sign_in_tab class="#{(%w[index sign_in].include?action_name)?'active':''}"
+      = form_for @sin_user||User.new, url: main_signIn_path do |f|
+        = f.label :email do
+          | E-mail
+          = f.email_field :email, autofocus: true, required: true
+        = f.label :password do
+          | Password
+          = f.password_field :password, autocomplete: "off", required: true
+        = f.submit "Sign In", class: :button
+    .content#sign_up_tab class="#{'sign_up' == action_name ? 'active' : ''}"
+      - if @sup_user
+        .panel.callout
+          ul
+            - @sup_user.errors.each do |err|
+              li = [err, @sup_user.errors[err]].join " "
+      = form_for @sup_user||User.new, url: main_signUp_path do |f|
+        = f.label :email do
+          | E-mail
+          = f.email_field :email, autofocus: true, required: true
+        = f.label :password do
+          | Password
+          = f.password_field :password, autocomplete: "off", required: true
+        = f.label :password_confirmation do
+          | Password confirmation
+          = f.password_field :password_confirmation, autocomplete: "off", required: true
+        = f.submit "Sign Up", class: :button
+
