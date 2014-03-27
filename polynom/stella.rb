@@ -10,7 +10,15 @@ class RegularPolygon
         @r = 49
         @alpha = 2*Math::PI/@n
         @points = @n.times.to_a.map {|x| [Math::cos(x*@alpha)*@r+@c[0], Math::sin(x*@alpha)*@r+@c[1]] }
+        self.align
         end
+    def align
+        n = @n - 2
+        @l = Math::sqrt( (@points[n][0]-@points[n+1][0])**2 +  (@points[n][1] - @points[n+1][1])**2 ) 
+        puts (@points[0][0] - @points[1][0])/@l
+        @dlt = Math::acos((@points[0][0] - @points[1][0])/@l)
+        @points = @n.times.to_a.map {|x| [Math::cos(-x*@alpha+@dlt)*@r+@c[0], Math::sin(-x*@alpha+@dlt)*@r+@c[1]] }
+        end        
 
     def lines
         @n.times.to_a.map {|i| i+1<@n?[@points[i], @points[i+1]]:[@points[-1], @points[0]]}
@@ -52,17 +60,33 @@ class Star < RegularPolygon
         i,n = 0,@n
         puts i,n,@step
         @points = @n.times.to_a.map {points[i=(i+@step)%n]}
-        end
+        self.align
+        @points = @n.times.to_a.map {points[i=(i+@step)%n]}
+    end
 end
+class SuperStar < RegularPolygon
+    def initialize n
+        super n
+        @name,@nick = "{#{@n} SuperStar", "superstar_#{@n}"
+    end
+    def lines
+        #@points.combination(2).to_a
+        @points.permutation(2).to_a
+    end
+end
+
 
 if __FILE__ == $0
     if not (1..2) === ARGV.length
         puts 'Usage: '
         puts "       #{$0} N   # generate a Nth regular polygom"
         puts "       #{$0} N S # generate a {N,S} star polygom"
+        puts "       #{$0} + N # generate a N SuperStar"
         exit
     elsif ARGV.length == 1
         pol = RegularPolygon.new ARGV[0].to_i
+    elsif ARGV[0] == '+'
+        pol = SuperStar.new ARGV[1].to_i
     else
         pol = Star.new ARGV[0].to_i, ARGV[1].to_i
     end
