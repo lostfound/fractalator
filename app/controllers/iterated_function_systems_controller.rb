@@ -6,10 +6,12 @@ class IteratedFunctionSystemsController < ApplicationController
   # GET /iterated_function_systems
   # GET /iterated_function_systems.json
   def index
+    page = params[:page]
+    page||=1
     unless params[:id]
-      @ifss = IteratedFunctionSystem.where.not(name: '')
+      @ifss = IteratedFunctionSystem.where.not(name: '').page(page).per(12)
     else
-      @ifss = User.find(params[:id].to_i).ifss.all
+      @ifss = User.find(params[:id].to_i).ifss.page(page).per(12)
     end
   end
 
