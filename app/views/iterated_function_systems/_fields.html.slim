@@ -1,0 +1,24 @@
+label number of iterations
+= number_field_tag :rec_no, 1
+dl.accordion.formations data-accordion=""
+  - @ifs.transformations.each_with_index do |t,i|
+    dd.transf data-id="#{i+1}"
+      a.subheader.text-right href="#transf#{i+1}" = "Transformation №#{i+1}"
+      .content id="transf#{i+1}"
+        .row
+          - [:scale_x, :scale_y, :angle_x, :angle_y].zip(["r", "s", "θ", "φ"]).each do |symname|
+            .small-3.columns 
+              span.label = symname[1]
+              = text_field_tag symname[0], t[symname[0]]
+        .row
+          .small-4.columns 
+            span.label X
+            = text_field_tag :trans_x, t[:trans_x]
+          .small-4.columns
+            = button_tag :destroy, name: :destroy, class: [:alert, :round]
+          .small-4.columns 
+            span.label Y
+            = text_field_tag :trans_y, t[:trans_y]
+        hr
+button#add_transf Add Transformation
+

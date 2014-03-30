@@ -1,0 +1,11 @@
+p#notice = notice
+
+= render 'svg', ifs: @ifs, quality: :max
+p
+  strong Name:
+  = @ifs.name
+p
+  strong Description:
+  = @ifs.description
+
+== render 'nav'

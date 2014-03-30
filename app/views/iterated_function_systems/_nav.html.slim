@@ -1,0 +1,59 @@
+- content_for :right_nav
+  ul.off-canvas-list
+    li :label IFS
+    - if action_name != "howto"
+      li = link_to howto_iterated_function_systems_path do
+        = fa_icon 'question'
+        ' How it works
+    - else
+      li :label 
+        = fa_icon 'question'
+        ' How it works
+    - if action_name != "index"
+      li = link_to iterated_function_systems_path do
+        = fa_icon 'table'
+        ' Gallery
+      li = link_to index_iterated_function_systems_path(id: current_user) do
+        = fa_icon 'smile-o'
+        ' My IFS Fractals
+
+    - elsif params[:id]
+      li = link_to iterated_function_systems_path do
+        = fa_icon 'table'
+        ' Gallery
+      li :label
+        = fa_icon 'smile-o'
+        ' My IFS Fractals
+      
+    - else
+      li :label 
+        = fa_icon 'table'
+        ' Gallery
+      li = link_to index_iterated_function_systems_path(id: current_user) do
+        = fa_icon 'smile-o'
+        ' My IFS Fractals
+
+    - if action_name == 'new'
+      li :label 
+        = fa_icon 'plus'
+        ' New IFS fractal
+    - elsif action_name == 'edit'
+      li :label 
+        = fa_icon 'edit'
+        ' Edit this fractal
+      li = link_to @ifs do
+        = fa_icon 'eye'
+        ' Show this fractal
+    - elsif action_name == 'show'
+      li = link_to edit_iterated_function_system_path(@ifs)
+        = fa_icon 'edit'
+        ' Edit this fractal
+        
+      li :label 
+        = fa_icon 'eye'
+        ' Show this fractal
+    - if action_name != 'new'
+      li = link_to new_iterated_function_system_path do
+        = fa_icon 'plus'
+        ' New fractal 
+

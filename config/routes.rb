@@ -1,9 +1,17 @@
 Fractalator::Application.routes.draw do
 
+  resources :iterated_function_systems do
+    collection do
+      get :howto
+      get 'index/:id' => :index, as: :index
+    end
+  end
+
   post "main/signIn"
   post "main/signUp"
   devise_for :users
   get "main/index"
+  get "main/ifs"
   root to: "main#index"
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

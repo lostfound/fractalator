@@ -1,0 +1,29 @@
+h1 IFS Gallery
+ul.small-block-grid-1.large-block-grid-3
+  - @ifss.each do |ifs|
+    li :ul.pricing-table
+      li.title = link_to ifs do 
+        = ifs.name
+      li.price 
+        - if ifs.image_thumb.nil?
+          = render "svg", ifs: ifs, quality: :max, unique: true
+        - else
+          ul.clearing-thumbs data-clearing=""
+            li
+              a href="/#{ifs.image}"
+                img src="/#{ifs.image_thumb}"
+      li.description = ifs.description
+      li.cta-button
+        = link_to new_iterated_function_system_path(clone: ifs.id), class: [:button, :round, :success] do
+          = fa_icon 'code-fork'
+          | Clone
+        - if ifs.user == current_user
+          = link_to ifs, data: {:confirm => 'Are you sure?'}, :method => :delete,
+                    class: [:button, :round, :alert] do
+            = fa_icon "times"
+            ' Erase
+          = link_to edit_iterated_function_system_path(ifs), class: [:button, :round] do
+            = fa_icon 'cutlery'
+            ' Edit
+= render 'nav'
+

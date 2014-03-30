@@ -26,7 +26,8 @@ gem 'turbolinks'
 gem 'jquery-turbolinks'
 gem 'slim-rails'
 gem 'foundation-rails'
-
+#gem 'font-icons-rails'#, :git=> 'git://github.com/shorelabs/font-icons-rails.git'
+gem "font-awesome-rails"
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 1.2'
 

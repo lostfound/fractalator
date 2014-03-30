@@ -1,5 +1,9 @@
 class MainController < ApplicationController
+  before_action :check_signin, only: [:ifs]
   def index
+  end
+
+  def ifs
   end
 
   def signIn
@@ -30,6 +34,9 @@ class MainController < ApplicationController
 private
   def sign_up_params
     params.require(:user).permit :email, :password, :password_confirmation
+  end
+  def check_signin
+    redirect_to main_index_path unless user_signed_in?
   end
   
 end

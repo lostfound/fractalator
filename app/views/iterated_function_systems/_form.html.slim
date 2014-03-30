@@ -1,0 +1,24 @@
+.row
+  .large-4.columns
+    == render 'svg', ifs: @ifs
+  .large-8.columns
+    == render 'fields'
+.row
+  = form_for @ifs, html: {id: :ifs_form} do |f|
+    .large-4.columns
+      .field
+        = f.label :name
+        = f.text_field :name
+      .field
+        = f.label :description
+        = f.text_area :description
+      = f.hidden_field :transforms
+      .actions = f.submit (action_name=="new")?"Create":'Save', class: [:button, :round]
+    .large-8.columns
+      - if @ifs.errors.any?
+        .alert-box.alert.radius
+          h3 = "#{pluralize(@ifs.errors.count, "error")} prohibited this IFS from being saved:"
+          ul
+            - @ifs.errors.full_messages.each do |message|
+              li = message
+

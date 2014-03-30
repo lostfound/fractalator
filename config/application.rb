@@ -21,3 +21,13 @@ module Fractalator
     # config.i18n.default_locale = :de
   end
 end
+class Fixnum
+  def to_angle
+    Math::PI*to_f/180
+  end
+end
+class Float
+  def to_angle
+    Math::PI*to_f/180
+  end
+end

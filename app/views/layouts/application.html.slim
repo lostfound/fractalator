@@ -4,10 +4,19 @@ html lang="en"
     meta charset="utf-8"
     meta name="viewport" content="width=device-width, initial-scale=1.0" 
 
-    title = content_for?(:title) ? yield(:title) : "foundation-rails"
+    title = content_for?(:title) ? yield(:title) : "Fractalator"
 
     = stylesheet_link_tag    "application", "data-turbolinks-track" => true
     = javascript_include_tag "vendor/modernizr", "data-turbolinks-track" => true
+    = javascript_include_tag "application", "data-turbolinks-track" => true
+    - if controller_name == "iterated_function_systems"
+      = javascript_include_tag "iterated_function_systems", "data-turbolinks-track" => true
+      - if action_name == 'show'
+        = javascript_include_tag "ifs_animation", "data-turbolinks-track" => true
+      - elsif action_name == 'howto'
+        = javascript_include_tag "ifs_howto", "data-turbolinks-track" => true
+        
+      
     = csrf_meta_tags
 
   body
@@ -28,13 +37,19 @@ html lang="en"
             section.middle.tab-bar-section
               h1.title = link_to main_index_path do
                 | Fractalator
+            -if content_for?:right_nav
+              section.right-small
+                a.right-off-canvas-toggle.menu-icon :span
           aside.left-off-canvas-menu
             ul.off-canvas-list
               li :label Fractals
-              li :a href="#" IFS
+              li = link_to iterated_function_systems_path do
+                | IFS
               li :label My Profile
               li = link_to 'Sign Out', destroy_user_session_path, method: :delete
+          -if content_for?:right_nav
+            aside.right-off-canvas-menu
+              = yield :right_nav
           section.main-section style="min-height: 500px;"
             = yield
-    = javascript_include_tag "application", "data-turbolinks-track" => true
         
