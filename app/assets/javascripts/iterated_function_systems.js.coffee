@@ -25,12 +25,6 @@ jQuery ->
     d = params.scale_y*Math.cos(params.angle_y*Math.PI/180)
     [a.toFixed(3), b.toFixed(3), c.toFixed(3), d.toFixed(3), params.trans_x.toFixed(3), params.trans_y.toFixed(3)]
 
-  r = 1
-  chrec= =>
-    $('#ifs_show').attr "xlink:href", "#rec#{r}"
-    r++
-    r=1 if r>5
-
   set_events= =>
     $(".transf input").unbind 'click'
     $(".transf input").change ->
@@ -40,11 +34,23 @@ jQuery ->
       $("use.tr#{r}").attr "transform", matrix
 
   set_events()
-  #for i in [1..3]
-  #  $($(".transf[data-id=#{i}] input")[0]).change()
 
   $("#rec_no").change ->
     n = parseInt @.value
+    for g in $("defs g")
+      gid = parseInt $(g).attr("id")[3..]
+      if gid > 1 and gid >n
+        $(g).remove()
+    fr=$("defs #rec1")
+    for i in [1..n]
+      if $("defs #rec#{i}").length < 1
+        frr = fr.clone()
+        frr.attr "id", "rec#{i}"
+        frr.find("use").attr "xlink:href", "#rec#{i-1}"
+        frr.find("use").attr "class", "u rec#{i}"
+        $("defs").append frr
+        
+        
     $("use.u").removeAttr "fill"
     $("#rec#{n} use.u").attr "fill", "black"
     $("#ifs_show").attr "xlink:href", "#rec#{n}"
@@ -90,3 +96,11 @@ jQuery ->
     p.remove()
   $("[name=destroy]").click ->
     destroy_transformation(@)
+  #$("#iterated_function_system_base_shape").change ->
+  #  shape_id= parseInt $(@).val()
+  #  if shape_id == 0
+  #    $("g#rec0").children().remove()
+  #    $("g#rec0").append($('<rect x="0" y="0" width="1" height="1"/>'))
+
+  #  else
+  #    $("g#rec0").html('<circle cy="0.5" cx="0.5" r="0.5"/>')

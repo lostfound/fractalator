@@ -45,9 +45,14 @@
         = fa_icon 'eye'
         ' Show this fractal
     - elsif action_name == 'show'
-      li = link_to edit_iterated_function_system_path(@ifs)
-        = fa_icon 'edit'
-        ' Edit this fractal
+      - if current_user.id == @ifs.user_id
+        li = link_to edit_iterated_function_system_path(@ifs)
+          = fa_icon 'edit'
+          ' Edit this fractal
+      - else
+        li = link_to new_iterated_function_system_path(clone: @ifs.id)
+          = fa_icon 'edit'
+          ' Clone this fractal
         
       li :label 
         = fa_icon 'eye'

@@ -7,11 +7,19 @@
   = form_for @ifs, html: {id: :ifs_form} do |f|
     .large-4.columns
       .field
+        - shapes = []
+        - IteratedFunctionSystem::SHAPES.each_with_index {|n,i| shapes<<[n,i]}
+        = f.label :base_shape
+        = f.select :base_shape,  shapes
+      .field
         = f.label :name
         = f.text_field :name
       .field
         = f.label :description
         = f.text_area :description
+      .field
+        = f.label :rec_number
+        = f.number_field :rec_number
       = f.hidden_field :transforms
       .actions = f.submit (action_name=="new")?"Create":'Save', class: [:button, :round]
     .large-8.columns

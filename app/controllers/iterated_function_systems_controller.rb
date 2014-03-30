@@ -7,7 +7,7 @@ class IteratedFunctionSystemsController < ApplicationController
   # GET /iterated_function_systems.json
   def index
     unless params[:id]
-      @ifss = IteratedFunctionSystem.all
+      @ifss = IteratedFunctionSystem.where.not(name: '')
     else
       @ifss = User.find(params[:id].to_i).ifss.all
     end
@@ -78,7 +78,7 @@ class IteratedFunctionSystemsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def iterated_function_system_params
-      params.require(:iterated_function_system).permit(:name, :description, :transforms)
+      params.require(:iterated_function_system).permit(:name, :description, :transforms, :rec_number, :base_shape)
     end
     def create_ifs
       @ifs = current_user.ifss.new iterated_function_system_params

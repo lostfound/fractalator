@@ -1,9 +1,11 @@
 class IteratedFunctionSystem < ActiveRecord::Base
   belongs_to :user
   before_validation :strips
-  validates_presence_of :name
-  validates_presence_of :description
-  before_save :to_image
+  #validates_presence_of :name
+  #validates_presence_of :description
+  after_save :to_image
+  before_destroy :rm_images
+  SHAPES=[:rect, :circle]
   def matrixs
     return @transmatrixs if @transmatrixs
     @transmatrixs = []
@@ -33,6 +35,7 @@ private
     self.description.try(:strip!)
   end
   def to_image
+    return if @saved
     slim_path = Rails.root.join("app/views/iterated_function_systems/_svg.html.slim").to_s
     svg = Slim::Template.new(slim_path, {:pretty=>true}).render \
             Object.new, quality: :min, ifs: self
@@ -42,8 +45,8 @@ private
     File.open(svg_path, "w") do |f|
       f.write svg.to_s
     end
-    `convert #{svg_path} #{next_rec_img}`
-    1.upto 9 do
+    `convert #{svg_path}  -transparent white #{next_rec_img}`
+    1.upto rec_number do |i|
       `rm -f #{prev_rec_img}`
       `mv #{next_rec_img} #{prev_rec_img}`
       svg = Slim::Template.new(slim_path, {:pretty=>true}).render \
@@ -51,13 +54,25 @@ private
       File.open(svg_path, "w") do |f|
         f.write svg.to_s
       end
-      `convert #{svg_path} #{next_rec_img}`
+      unless i == rec_number
+        `convert #{svg_path}  -transparent white #{next_rec_img}`
+      else
+        `convert #{svg_path}  #{next_rec_img}`
+      end
     end
     rastor_dir = FileUtils.mkdir_p( Rails.root.join("public", "rastor", "ifs", self.id.to_s))[0].to_s
     `convert -scale 300x300 #{next_rec_img} #{rastor_dir}/thumb.png`
+    `mv #{rastor_dir}/image.png`
     `mv #{next_rec_img} #{rastor_dir}/image.png`
     `rm #{svg_path}`
     self.image = ["rastor", "ifs", self.id.to_s, "image.png"].join("/")
     self.image_thumb = ["rastor", "ifs", self.id.to_s, "thumb.png"].join("/")
+    @saved=true
+    save
+  end
+  def rm_images
+    if id
+      FileUtils.rm_rf Rails.root.join("public", "rastor", "ifs", self.id.to_s).to_s
+    end
   end
 end
