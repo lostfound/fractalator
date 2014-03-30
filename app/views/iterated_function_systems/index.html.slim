@@ -2,18 +2,26 @@ h1 IFS Gallery
 = paginate @ifss
 ul.small-block-grid-1.large-block-grid-3.xlarge-block-grid-4.medium-block-grid-2
   - @ifss.each do |ifs|
-    li :ul.pricing-table
-      li.title = link_to ifs do 
-        = ifs.name
+    li :ul.ifs.pricing-table data-id="#{ifs.id}"
+      li.title 
+        = link_to ifs do 
+          = ifs.name
       li.price 
         - if ifs.image_thumb.nil?
           = render "svg", ifs: ifs, quality: :max, unique: true
         - else
-          ul.clearing-thumbs data-clearing=""
+          ul.show-for-medium-up.clearing-thumbs data-clearing=""
             li
               a href="/#{ifs.image}"
                 img src="/#{ifs.image_thumb}"
-      li.description = ifs.description
+          = link_to ifs, class: "show-for-small-only" do
+            img src="/#{ifs.image_thumb}"
+      li.description 
+        = fa_icon 'thumbs-o-up', class: [:left, :like]
+        = fa_icon 'thumbs-o-down', class: [:right, :dislike]
+        ' score:
+        strong.score = ifs.score
+      //= ifs.description
       li.cta-button
         = link_to new_iterated_function_system_path(clone: ifs.id), class: [:button, :round, :success] do
           = fa_icon 'code-fork'

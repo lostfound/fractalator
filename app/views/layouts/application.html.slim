@@ -15,7 +15,8 @@ html lang="en"
         = javascript_include_tag "ifs_animation", "data-turbolinks-track" => true
       - elsif action_name == 'howto'
         = javascript_include_tag "ifs_howto", "data-turbolinks-track" => true
-        
+      - elsif action_name == 'index'
+        = javascript_include_tag "ifs_index", "data-turbolinks-track" => true
       
     = csrf_meta_tags
 

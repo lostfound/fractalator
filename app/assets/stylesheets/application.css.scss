@@ -16,3 +16,9 @@
 i.fa {
   margin-right: 5px;
 };
+i.fa.like:hover {
+  transform: rotate(-30deg) scale(2.0);
+}
+i.fa.dislike:hover {
+  transform: rotate(30deg) scale(2.0);
+}

@@ -3,8 +3,9 @@ class IteratedFunctionSystem < ActiveRecord::Base
   before_validation :strips
   #validates_presence_of :name
   #validates_presence_of :description
-  after_save :to_image
   before_destroy :rm_images
+
+  has_many :likes, as: :likeable
   SHAPES=[:rect, :circle]
   def matrixs
     return @transmatrixs if @transmatrixs
@@ -28,11 +29,6 @@ class IteratedFunctionSystem < ActiveRecord::Base
         {num: 3, scale_x: 0.5, scale_y: 0.5, angle_x: 0, angle_y: 0, trans_x: 0.5,  trans_y: 0.5}]
 
     end
-  end
-private
-  def strips
-    self.name.try(:strip!)
-    self.description.try(:strip!)
   end
   def to_image
     return if @saved
@@ -69,6 +65,11 @@ private
     self.image_thumb = ["rastor", "ifs", self.id.to_s, "thumb.png"].join("/")
     @saved=true
     save
+  end
+private
+  def strips
+    self.name.try(:strip!)
+    self.description.try(:strip!)
   end
   def rm_images
     if id
