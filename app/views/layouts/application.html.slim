@@ -10,7 +10,8 @@ html lang="en"
     = javascript_include_tag "vendor/modernizr", "data-turbolinks-track" => true
     = javascript_include_tag "application", "data-turbolinks-track" => true
     - if controller_name == "iterated_function_systems"
-      = javascript_include_tag "iterated_function_systems", "data-turbolinks-track" => true
+      - if ['new', 'edit'].include?action_name
+        = javascript_include_tag "iterated_function_systems", "data-turbolinks-track" => true
       - if action_name == 'show'
         = javascript_include_tag "ifs_animation", "data-turbolinks-track" => true
         = javascript_include_tag "ifs_index", "data-turbolinks-track" => true

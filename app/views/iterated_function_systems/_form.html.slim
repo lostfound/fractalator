@@ -1,6 +1,8 @@
 .row
   .large-4.columns
-    == render 'svg', ifs: @ifs
+    .ifs_preview
+      == render 'svg', ifs: @ifs, r: 1
+      #mouse_handler
   .large-8.columns
     == render 'fields'
 .row

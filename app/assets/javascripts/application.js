@@ -15,5 +15,9 @@
 //= require turbolinks
 //= require jquery_ujs
 //= require foundation
-
+// require foundation/foundation
+// require foundation/foundation.offcanvas
+// require foundation/foundation.accordion
+// require foundation/foundation.clearing
+// require foundation/foundation.tab
 $(function(){ $(document).foundation(); });

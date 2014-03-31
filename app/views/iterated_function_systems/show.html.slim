@@ -19,6 +19,8 @@ p#notice = notice
   .large-7.columns
     - unless @ifs.description.empty?
       .panel
-        = @ifs.description
+        = markdown(@ifs.description).html_safe
+    - unless ["", nil].include?@ifs.image
+      img src="/#{@ifs.image}"
 
 == render 'nav'

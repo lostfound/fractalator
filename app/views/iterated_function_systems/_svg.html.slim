@@ -2,6 +2,7 @@
 - unique||=false
 - rec = (unique==true)?"#{ifs.id}rec":"rec"
 - image||=nil
+- r||=6
 - if image
   - w,h = [1024,1024]
 - else
@@ -18,8 +19,8 @@ svg width="#{w}" height="#{h}" xmlns="http://www.w3.org/2000/svg" xmlns:ev="http
           circle cx="0.5" cy="0.5" r="0.5"
       - else
         image x="0" y="0" width="1" height="1" xlink:href="file://#{image}"
-    - rec_max = (image.nil?)?6:1
-    - until rec_max**(ifs.matrixs.length) < 13000
+    - rec_max = (image.nil?)?r:1
+    - until (ifs.matrixs.length)**rec_max < 10000
       - rec_max-=1
     - 1.upto rec_max do |i|
       g id="#{rec}#{i}"
