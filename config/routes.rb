@@ -10,6 +10,7 @@ Fractalator::Application.routes.draw do
 
   post "main/signIn"
   post "main/signUp"
+  post "main/set_name"
   devise_for :users
   get "main/index"
   get "main/ifs"

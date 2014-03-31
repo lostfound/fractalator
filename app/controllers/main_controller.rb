@@ -31,6 +31,13 @@ class MainController < ApplicationController
     @sup_user = user
     render 'index'
   end
+  def set_name
+    if user_signed_in? and params[:name]
+      current_user.update(name: params[:name])
+
+    end
+    render "index"
+  end
 private
   def sign_up_params
     params.require(:user).permit :email, :password, :password_confirmation

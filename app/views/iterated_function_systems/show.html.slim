@@ -1,11 +1,24 @@
 p#notice = notice
+.row
+  .large-5.columns.ifs data-id="#{@ifs.id}"
+    h2
+      = @ifs.name
+      - if @ifs.user.name
+        span.label.round = "by #{@ifs.user.name}"
+    .likes
+      a.like href=""
+        = fa_icon 'thumbs-o-up', class: [:left]
+      strong.score = @ifs.score
+      '
+      = fa_icon (@ifs.score>=0)?'smile-o':'frown-o', class: :score_currency
+      '
+      a.dislike href=""
+        = fa_icon 'thumbs-o-down'
 
-= render 'svg', ifs: @ifs, quality: :max
-p
-  strong Name:
-  = @ifs.name
-p
-  strong Description:
-  = @ifs.description
+    = render 'svg', ifs: @ifs, quality: :max
+  .large-7.columns
+    - unless @ifs.description.empty?
+      .panel
+        = @ifs.description
 
 == render 'nav'

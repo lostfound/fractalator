@@ -13,9 +13,10 @@ html lang="en"
       = javascript_include_tag "iterated_function_systems", "data-turbolinks-track" => true
       - if action_name == 'show'
         = javascript_include_tag "ifs_animation", "data-turbolinks-track" => true
+        = javascript_include_tag "ifs_index", "data-turbolinks-track" => true
       - elsif action_name == 'howto'
         = javascript_include_tag "ifs_howto", "data-turbolinks-track" => true
-      - elsif action_name == 'index'
+      - elsif 'index' == action_name
         = javascript_include_tag "ifs_index", "data-turbolinks-track" => true
       
     = csrf_meta_tags
@@ -44,13 +45,18 @@ html lang="en"
           aside.left-off-canvas-menu
             ul.off-canvas-list
               li :label Fractals
-              li = link_to iterated_function_systems_path do
-                | IFS
+              - if controller_name == "iterated_function_systems"
+                -if content_for?:right_nav
+                  = yield :right_nav
+              - else
+                li = link_to iterated_function_systems_path do
+                  | IFS
               li :label My Profile
               li = link_to 'Sign Out', destroy_user_session_path, method: :delete
           -if content_for?:right_nav
             aside.right-off-canvas-menu
-              = yield :right_nav
+              ul.off-canvas-list
+                = yield :right_nav
           section.main-section style="min-height: 500px;"
             = yield
         

@@ -16,9 +16,9 @@
 i.fa {
   margin-right: 5px;
 };
-i.fa.like:hover {
+a.like i:hover {
   transform: rotate(-30deg) scale(2.0);
 }
-i.fa.dislike:hover {
+a.dislike i:hover {
   transform: rotate(30deg) scale(2.0);
 }

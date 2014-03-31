@@ -60,7 +60,9 @@ jQuery ->
     n++
     nt = $(".formations").children().last().clone()
     nt.attr "data-id", n
-    nt.children(".subheader.text-right").html("Transformation №#{n}")
+    nt.find(".subheader").html("Transformation №#{n}")
+    nt.find(".subheader").attr "href", "#transf#{n}"
+    nt.find(".content").attr "id", "transf#{n}"
     $(".formations").append nt
     for u in $("use.tr#{n-1}")
       uu= $(u).clone()
@@ -69,6 +71,7 @@ jQuery ->
     set_events()
     $(".transf[data-id=#{n}] [name=destroy]").click ->
       destroy_transformation @
+    #Foundation.libs.accordion.events()
     
   on_bayan=(b) =>
     rec_no = $("#rec_no")[0].value

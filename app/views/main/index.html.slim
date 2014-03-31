@@ -1,4 +1,17 @@
 - unless user_signed_in?
   = render 'sign'
 - else
-  h1 Hi guy
+  - if current_user.name
+    h1 
+      ' Hi 
+      = current_user.name
+  - else
+    h1 Hi unnamed pitty kitty ;)
+    h2 Let me give u the freaky-pricky name
+    = form_tag main_set_name_path, method: :post do
+      - 1.upto 10 do
+        - name=Faker::Name.name
+        = radio_button_tag :name, name
+        = label_tag name, name
+        br
+      = submit_tag "Mew", class: :button

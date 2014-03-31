@@ -17,10 +17,13 @@ ul.small-block-grid-1.large-block-grid-3.xlarge-block-grid-4.medium-block-grid-2
           = link_to ifs, class: "show-for-small-only" do
             img src="/#{ifs.image_thumb}"
       li.description 
-        = fa_icon 'thumbs-o-up', class: [:left, :like]
-        = fa_icon 'thumbs-o-down', class: [:right, :dislike]
-        ' score:
+        a.like href=""
+          = fa_icon 'thumbs-o-up', class: [:left]
+        a.dislike href=""
+          = fa_icon 'thumbs-o-down', class: [:right]
         strong.score = ifs.score
+        '
+        = fa_icon (ifs.score>=0)?'smile-o':'frown-o', class: :score_currency
       //= ifs.description
       li.cta-button
         = link_to new_iterated_function_system_path(clone: ifs.id), class: [:button, :round, :success] do

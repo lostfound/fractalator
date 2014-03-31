@@ -1,7 +1,7 @@
 class IteratedFunctionSystemsController < ApplicationController
   before_action :set_iterated_function_system, only: [:show, :edit, :update, :destroy, :like]
   before_action :create_ifs, only: [:create]
-  load_and_authorize_resource
+  load_and_authorize_resource except: :like
 
   # GET /iterated_function_systems
   # GET /iterated_function_systems.json
