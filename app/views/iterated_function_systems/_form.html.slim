@@ -3,6 +3,14 @@
     .ifs_preview
       == render 'svg', ifs: @ifs, r: 1
       #mouse_handler
+      .point data-pos="00"
+        | (0,0)
+      .point data-pos="10"
+        | (1,0)
+      .point data-pos="01"
+        | (0,1)
+      .point data-pos="11"
+        | (1,1)
   .large-8.columns
     == render 'fields'
 .row
@@ -24,6 +32,9 @@
         = f.number_field :rec_number
       = f.hidden_field :transforms
       .actions = f.submit (action_name=="new")?"Create":'Save', class: [:button, :round]
+      .alert-box.warning.radius#fractal_generation_alert style="display: none;"
+        ' Please be patient as the fractal generation will take of while
+        a.close href="#" &times
     .large-8.columns
       - if @ifs.errors.any?
         .alert-box.alert.radius

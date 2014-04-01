@@ -16,6 +16,8 @@ jQuery ->
         tr_hash[name] = parseFloat tr.find("[name=#{name}]")[0].value
       transforms.push tr_hash
     $(@).find("#iterated_function_system_transforms").val JSON.stringify transforms
+    $(@).find("[type=submit]").hide()
+    $("#fractal_generation_alert").show()
 
   transform= (num)=>
     params=[]

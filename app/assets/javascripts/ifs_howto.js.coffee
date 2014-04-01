@@ -2,8 +2,6 @@ jQuery ->
   $("a span.label").click ->
     hr = $(@).parent().attr 'href'
     panel = $(hr)
-    if panel.hasClass "hide"
-      panel.removeClass "hide"
-    else
-      panel.addClass("hide")
+    $(".panel:not(#{hr})").addClass "hide"
+    panel.toggleClass "hide"
     false

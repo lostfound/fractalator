@@ -43,4 +43,23 @@ a.dislike i:hover {
     height: 300px;
     cursor: crosshair;
   }
+  .point {
+      position: absolute;
+  }
+  .point[data-pos="00"] {
+    top: 0;
+    left: 0;
+  }
+  .point[data-pos="10"] {
+    top: 0;
+    right: 0;
+  }
+  .point[data-pos="01"] {
+    bottom: 0;
+    left: 0;
+  }
+  .point[data-pos="11"] {
+    bottom: 0;
+    right: 0;
+  }
 }
