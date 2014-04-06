@@ -3,6 +3,7 @@
 - rec = (unique==true)?"#{ifs.id}rec":"rec"
 - image||=nil
 - r||=6
+- show_coords||=false
 - if image
   - w,h = [1024,1024]
 - else
@@ -26,6 +27,15 @@ svg width="#{w}" height="#{h}" xmlns="http://www.w3.org/2000/svg" xmlns:ev="http
       g id="#{rec}#{i}"
         - ifs.matrixs.each_with_index do |matrix,no|
           use xlink:href="##{rec}#{i-1}" class="u tr#{no+1}" transform="matrix(#{matrix.join(",")})" fill="black"
-  rect width="#{h}" height="#{w}" stroke="none" fill="none"
+  - if show_coords
+    g id="coords"
+      text x="2" y="9" fill="gray" font-size="10px"
+        | 0,0
+      text x="286" y="9" fill="gray" font-size="10px"
+        | 1,0
+      text x="2" y="298" fill="gray" font-size="10px"
+        | 0,1
+      text x="286" y="298" fill="gray" font-size="10px"
+        | 1,1
   use#ifs_show xlink:href="##{rec}#{(quality == :max)?rec_max:1}" transform="scale(#{w})"
 

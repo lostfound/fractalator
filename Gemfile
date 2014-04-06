@@ -37,6 +37,7 @@ gem 'cancan'
 gem "kaminari"
 gem "faker"
 gem "redcarpet"
+gem 'jquery-hotkeys-rails'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.

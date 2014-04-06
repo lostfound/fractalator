@@ -1,0 +1,58 @@
+.row
+  .large-12.columns
+    h1 Curves
+.row
+  .large-8.columns
+    .control.panel
+      .icon_button#erase data-tooltip="" title="Erase a point"
+        = fa_icon "eraser"
+      .icon_button.selected#new_point data-tooltip="" title="A new point"
+        = fa_icon "circle-o"
+      .icon_button#move style="display:none"  data-tooltip="" title="Move selected points"
+        = fa_icon "arrows"
+      .icon_button.command#clear style="display:none"  data-tooltip="" title="Clear selection"
+        = fa_icon "square-o"
+      .icon_button.command#line style="display:none"  data-tooltip="" title="Make a line"
+        = fa_icon "chain"
+      .icon_button.command#rmline style="display:none"  data-tooltip="" title="Delete lines"
+        = fa_icon "chain-broken"
+      .icon_button.command#align_x style="display:none" data-tooltip="" title="Horizontal alignment"
+        = fa_icon "arrows-h"
+      .icon_button.command#align_y style="display:none" title="Vertical alignment"
+        = fa_icon "arrows-v"
+      .row.collapse.right#angle_pair style="width: 90; display: none;" 
+        .small-3.columns
+          .icon_button.command.right#angle title="Angle"
+            | β
+        .small-9.columns
+          input#angle_val type="text" value="90" style="padding: 2px; height: 22px;"
+      .row.collapse.right#length_pair style="width: 90; display: none;" 
+        .small-3.columns
+          .icon_button.command.right#length title="Length"
+            =fa_icon 'expand'
+        .small-9.columns
+          input#length_val type="text" value="" style="padding: 2px; height: 22px;"
+    .curve_preview
+      svg width="600" height="600"
+        defs
+          marker#markerCircle markerWidth="8" markerHeight="8" refx="5" refy="5"
+            circle cx="5" cy="5" r="3" 
+          marker#markerArrow markerWidth="13" markerHeight="13" refx="2" refy="6" orient="auto"
+            path d="M2,2 L2,11 L10,6 L2,2" 
+        rect#canvas width="600" height="600" stroke="black" fill="white"
+        g#lines
+        g#pnumbers
+        g.points
+          circle.center cx="300" cy="300" r="10" title="center" data-id="0"
+        g#coords
+          text x="2" y="9" fill="gray" font-size="10px"
+            | 0,0
+          text x="576" y="9" fill="gray" font-size="10px"
+            | 600,0
+          text x="2" y="598" fill="gray" font-size="10px"
+            | 0,600
+          text x="566" y="598" fill="gray" font-size="10px"
+            | 600,600
+      #mouse_handler style="display: none"
+  .large-4.columns
+    #debug

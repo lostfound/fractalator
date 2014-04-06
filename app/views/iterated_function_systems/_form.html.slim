@@ -1,16 +1,8 @@
 .row
   .large-4.columns
     .ifs_preview
-      == render 'svg', ifs: @ifs, r: 1
+      == render 'svg', ifs: @ifs, r: 1, show_coords: true
       #mouse_handler
-      .point data-pos="00"
-        | (0,0)
-      .point data-pos="10"
-        | (1,0)
-      .point data-pos="01"
-        | (0,1)
-      .point data-pos="11"
-        | (1,1)
   .large-8.columns
     == render 'fields'
 .row

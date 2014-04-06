@@ -19,6 +19,10 @@ html lang="en"
         = javascript_include_tag "ifs_howto", "data-turbolinks-track" => true
       - elsif 'index' == action_name
         = javascript_include_tag "ifs_index", "data-turbolinks-track" => true
+    - elsif controller_name == 'main' and action_name == 'curves'
+        = javascript_include_tag "curves", "data-turbolinks-track" => true
+        = stylesheet_link_tag    "curves", "data-turbolinks-track" => true
+      
       
     = csrf_meta_tags
 

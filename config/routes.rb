@@ -13,7 +13,7 @@ Fractalator::Application.routes.draw do
   post "main/set_name"
   devise_for :users
   get "main/index"
-  get "main/ifs"
+  get "main/curves"
   root to: "main#index"
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

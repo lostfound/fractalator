@@ -3,7 +3,7 @@ class MainController < ApplicationController
   def index
   end
 
-  def ifs
+  def curves
   end
 
   def signIn

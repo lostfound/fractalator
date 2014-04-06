@@ -15,6 +15,7 @@
 //= require turbolinks
 //= require jquery_ujs
 //= require foundation
+//= require jquery-hotkeys
 // require foundation/foundation
 // require foundation/foundation.offcanvas
 // require foundation/foundation.accordion
