@@ -1,5 +1,6 @@
 Fractalator::Application.routes.draw do
 
+  #get "omniauth_callbacks/vkontakte"
   resources :iterated_function_systems do
     collection do
       get :howto
@@ -11,7 +12,7 @@ Fractalator::Application.routes.draw do
   post "main/signIn"
   post "main/signUp"
   post "main/set_name"
-  devise_for :users
+  devise_for :users,  controllers: { :omniauth_callbacks => "users/omniauth_callbacks" }
   get "main/index"
   get "main/curves"
   root to: "main#index"

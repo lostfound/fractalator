@@ -7,14 +7,22 @@ fieldset
         a href="#sign_up_tab" Sign Up
   .tabs-content
     .content#sign_in_tab class="#{(%w[index sign_in].include?action_name)?'active':''}"
-      = form_for @sin_user||User.new, url: main_signIn_path do |f|
-        = f.label :email do
-          | E-mail
-          = f.email_field :email, autofocus: true, required: true
-        = f.label :password do
-          | Password
-          = f.password_field :password, autocomplete: "off", required: true
-        = f.submit "Sign In", class: :button
+      .social
+        h5 Sign In with:
+        = link_to user_omniauth_authorize_path(:twitter), class: [:button, :small], style: "margin-right: 10px"
+          = fa_icon :twitter
+        = link_to user_omniauth_authorize_path(:vkontakte), class: [:button, :small]
+          = fa_icon :vk
+      h5 or
+      .f
+        = form_for @sin_user||User.new, url: main_signIn_path do |f|
+          = f.label :email do
+            | E-mail
+            = f.email_field :email, autofocus: true, required: true
+          = f.label :password do
+            | Password
+            = f.password_field :password, autocomplete: "off", required: true
+          = f.submit "Sign In", class: :button
     .content#sign_up_tab class="#{'sign_up' == action_name ? 'active' : ''}"
       - if @sup_user
         .panel.callout
