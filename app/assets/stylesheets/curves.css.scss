@@ -8,6 +8,12 @@ $primary-color: #008CBA;
   circle.center {
     stroke: green;
   }
+  circle.start {
+    stroke: blue;
+  }
+  circle.finish {
+    stroke: lime;
+  }
   circle[selected] {
     fill: orange;
   }

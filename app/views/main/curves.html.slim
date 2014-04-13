@@ -4,13 +4,17 @@
 .row
   .large-8.columns
     .control.panel
+      .icon_button.command#undo data-tooltip="" title="Undo (ctrl-z)"
+        = fa_icon "mail-reply"
+      .icon_button.command#redo data-tooltip="" title="Redo (ctrl-y)"
+        = fa_icon "mail-forward"
       .icon_button#erase data-tooltip="" title="Erase a point"
         = fa_icon "eraser"
       .icon_button.selected#new_point data-tooltip="" title="A new point"
         = fa_icon "circle-o"
       .icon_button#move style="display:none"  data-tooltip="" title="Move selected points"
         = fa_icon "arrows"
-      .icon_button.command#clear style="display:none"  data-tooltip="" title="Clear selection"
+      .icon_button.command#clear style="display:none"  data-tooltip="" title="Clear selection(ctrl-c)"
         = fa_icon "square-o"
       .icon_button.command#line style="display:none"  data-tooltip="" title="Make a line"
         = fa_icon "chain"
@@ -20,6 +24,20 @@
         = fa_icon "arrows-h"
       .icon_button.command#align_y style="display:none" title="Vertical alignment"
         = fa_icon "arrows-v"
+
+      .row.collapse.right#coord_y style="width: 90; display: none;" 
+        .small-3.columns
+          .icon_button.command.right
+            | Y
+        .small-9.columns
+          input#coord_y_val type="text" value="" style="padding: 2px; height: 22px;"
+      .row.collapse.right#coord_x style="width: 90; display: none;" 
+        .small-3.columns
+          .icon_button.command.right
+            | X
+        .small-9.columns
+          input#coord_x_val type="text" value="" style="padding: 2px; height: 22px;"
+
       .row.collapse.right#angle_pair style="width: 90; display: none;" 
         .small-3.columns
           .icon_button.command.right#angle title="Angle"
@@ -32,6 +50,10 @@
             =fa_icon 'expand'
         .small-9.columns
           input#length_val type="text" value="" style="padding: 2px; height: 22px;"
+  .large-4.columns
+    #debug
+.row
+  .large-8.columns
     .curve_preview
       svg width="600" height="600"
         defs
@@ -44,6 +66,8 @@
         g#pnumbers
         g.points
           circle.center cx="300" cy="300" r="10" title="center" data-id="0"
+          circle.start cx="100" cy="300" r="10" title="start" data-id="1"
+          circle.finish cx="500" cy="300" r="10" title="end" data-id="2"
         g#coords
           text x="2" y="9" fill="gray" font-size="10px"
             | 0,0
@@ -55,4 +79,23 @@
             | 600,600
       #mouse_handler style="display: none"
   .large-4.columns
-    #debug
+    #lines_props
+      h4 Lines
+      table.table.lines
+        tr
+          th ab
+          th flipx
+          th flipy
+          th
+        tr#line_template.line style="display: none"
+          td.direction
+            | (0,0)->(1,2)
+          td
+            input.flipx type="checkbox"
+          td
+            input.flipy type="checkbox"
+          td
+            .icon_button.command.destroy
+              = fa_icon 'times'
+            
+

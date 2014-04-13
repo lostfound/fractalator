@@ -5,6 +5,7 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :omniauthable
   has_many :ifss, class_name: :IteratedFunctionSystem, foreign_key: :user_id, dependent: :destroy
   def self.find_for_vk_oauth access_token
+    p access_token.extra.raw_info
     if user = User.where(provider: 'vkontakte', url: access_token.info.urls.Vkontakte).first
       user
     else

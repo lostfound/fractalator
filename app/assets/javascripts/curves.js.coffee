@@ -12,10 +12,12 @@ jQuery ->
   P_SEL=3
   P_TYPE=2
   points = {0: [300,300,"center", false]}
+  points[1]=[100,300,"start",  false]
+  points[2]=[500,300,"finish", false]
   lines  = {}
   plines = {}
   l_counter = 0
-  p_counter = 1
+  p_counter = 3
   points_sequence=[]
   history=[]
   history_pos=0
@@ -93,7 +95,63 @@ jQuery ->
     $("#debug").html("#{history_pos} #{history.length}")
   
 
-  
+  insert_line_to_table= (lid, table)=>
+    line = lines[lid]
+    a = points[line[0]]
+    b = points[line[1]]
+
+    trline = $("#line_template").clone()
+    trline.attr("data-id", lid)
+    trline.removeAttr 'id'
+    trline.show()
+    trline.find('.direction').html "(#{parseInt a[0]},#{parseInt a[1]})-(#{parseInt b[0]},#{parseInt b[1]})"
+    if line[2]['flipx']
+      $(trline.find('.flipx')).prop('checked', true)
+    if line[2]['flipy']
+      $(trline.find('.flipy')).prop('checked', true)
+    trline.show()
+    table.append trline
+
+  update_lines_table= =>
+    table = $('.table.lines')
+    if points_sequence.length > 2 or points_sequence.length ==0
+      return table.hide()
+    else
+      aid = points_sequence[0]
+
+      if points_sequence.length == 1
+        lns = plines[aid]
+        if !lns or lns.length == 0
+          return table.hide()
+        else
+          tlns = []
+          for lid in lns
+            if lines[lid][0] == aid
+              tlns.push lid
+          if tlns.length == 0
+            return table.hide()
+          else
+            table.find('tr[data-id]').remove()
+            for lid in tlns
+              insert_line_to_table lid, table
+
+            return table.show()
+      else
+        bid = points_sequence[1]
+        lns = plines[aid]
+        return table.hide() unless lns
+        return table.hide() unless plines[bid]
+        llns=[]
+        for lid in lns
+          if lid in plines[bid] and lines[lid][0] == aid
+            llns.push lid
+        lns = llns
+        if !lns or lns.length == 0
+          return table.hide()
+        table.find('tr[data-id]').remove()
+        for lid in lns
+          insert_line_to_table lid, table
+        return table.show()
   #lines helper
   create_line= (a,b)=>
     lid=l_counter
@@ -196,6 +254,10 @@ jQuery ->
       pn.attr "x",  points[id][0]
       pn.attr "y",  points[id][1]
     history_push()
+    if points_sequence.length == 1
+      point = points[points_sequence[0]]
+      $("#coord_x_val").val point[0]
+      $("#coord_y_val").val point[1]
 
       
   $("#mouse_handler").mousemove (e)->
@@ -242,6 +304,7 @@ jQuery ->
     type=$('.control.panel .icon_button.selected').attr 'id'
     id = parseInt $(@).attr "data-id"
     if type == 'erase'
+      return if $(@).attr('class') in ['center', 'start', 'finish']
       delete_line_by_point id
       delete points[id]
       rm_point_from_sequence id
@@ -264,7 +327,16 @@ jQuery ->
   #Point selection
   when_point_selected= =>
     l = points_sequence.length
-
+    update_lines_table()
+    if l == 1
+      point = points[points_sequence[0]]
+      $("#coord_x_val").val point[0]
+      $("#coord_y_val").val point[1]
+      $("#coord_x").show()
+      $("#coord_y").show()
+    else
+      $("#coord_x").hide()
+      $("#coord_y").hide()
     if l > 0
       $("#move").show()
       $("#clear").show()
@@ -313,6 +385,16 @@ jQuery ->
       $("#align_y").hide()
       $("#length_pair").hide()
       $("#angle_pair").hide()
+
+  $("#coord_x_val").change ->
+    point = points[points_sequence[0]]
+    ch_coords points_sequence[0], parseFloat($(@).val()), point[1]
+    history_push()
+
+  $("#coord_y_val").change ->
+    point = points[points_sequence[0]]
+    ch_coords points_sequence[0], point[0], parseFloat($(@).val())
+    history_push()
 
   $("#angle_val").change ->
     prev_phi = ab_seq_angle(0,1)*Math.PI/180
@@ -387,6 +469,11 @@ jQuery ->
         for lid in rmlines
           delete_line lid
         when_point_selected()
+      else if name == 'undo'
+        return history_undo()
+      else if name == 'redo'
+        return history_redo()
+
       history_push()
       return
     $(@).toggleClass "selected"
@@ -399,6 +486,24 @@ jQuery ->
         $("#mouse_handler").hide()
     else
       $("#mouse_handler").hide()
+  #lines section
+  $(".lines").on "click", '.destroy', ->
+    lid = parseInt $(@).parents(".line").attr "data-id"
+    delete_line lid
+    update_lines_table()
+    history_push()
+  $(".lines").on "change", '[type=checkbox]', ->
+    lid = parseInt $(@).parents(".line").attr "data-id"
+    line = lines[lid]
+    checked = $(@).prop 'checked'
+    cls = 'flipx'
+    cls = 'flipy' if  $(@).hasClass('flipy')
+
+    if checked
+      line[2][cls] = true
+    else
+      delete line[2][cls]
+    history_push()
 
   $(document).on "keydown", null, "ctrl+c", ->
     if $(".control.panel #clear").is(":visible")
