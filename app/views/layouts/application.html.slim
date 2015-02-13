@@ -7,7 +7,7 @@ html lang="en"
     title = content_for?(:title) ? yield(:title) : "Fractalator"
 
     = stylesheet_link_tag    "application", "data-turbolinks-track" => true
-    = javascript_include_tag "vendor/modernizr", "data-turbolinks-track" => true
+    /= javascript_include_tag "vendor/modernizr", "data-turbolinks-track" => true
     = javascript_include_tag "application", "data-turbolinks-track" => true
     - if controller_name == "iterated_function_systems"
       - if ['new', 'edit'].include?action_name
@@ -36,11 +36,11 @@ html lang="en"
               | FRACTALATOR
       = yield 
     - else
-      .off-canvas-wrap
+      .off-canvas-wrap data-offcanvas=""
         .inner-wrap
           nav.tab-bar
             section.left-small
-              a.left-off-canvas-toggle.menu-icon :span
+              a.left-off-canvas-toggle.menu-icon href="#" :span
             section.middle.tab-bar-section
               h1.title = link_to main_index_path do
                 | Fractalator

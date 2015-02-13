@@ -14,11 +14,7 @@
 //= require jquery.turbolinks
 //= require turbolinks
 //= require jquery_ujs
+//= require vendor/modernizr
 //= require foundation
 //= require jquery-hotkeys
-// require foundation/foundation
-// require foundation/foundation.offcanvas
-// require foundation/foundation.accordion
-// require foundation/foundation.clearing
-// require foundation/foundation.tab
 $(function(){ $(document).foundation(); });
