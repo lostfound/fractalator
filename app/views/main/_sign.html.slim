@@ -9,10 +9,11 @@ fieldset
     .content#sign_in_tab class="#{(%w[index sign_in].include?action_name)?'active':''}"
       .social
         h5 Sign In with:
-        = link_to user_omniauth_authorize_path(:twitter), class: [:button, :small], style: "margin-right: 10px"
-          = fa_icon :twitter
-        = link_to user_omniauth_authorize_path(:vkontakte), class: [:button, :small]
+        /= link_to user_omniauth_authorize_path(:vkontakte), class: [:button, :small]
           = fa_icon :vk
+        = link_to user_omniauth_authorize_path(:twitter), class: [:button, :small], style: "margin-right: 10px"
+          | twitter
+          /= fa_icon :twitter
       h5 or
       .f
         = form_for @sin_user||User.new, url: main_signIn_path do |f|

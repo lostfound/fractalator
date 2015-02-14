@@ -52,7 +52,6 @@ class IteratedFunctionSystemsController < ApplicationController
   def create
     respond_to do |format|
       if @ifs.save
-        @ifs.to_image
         format.html { redirect_to @ifs, notice: 'Iterated function system was successfully created.' }
         format.json { render action: 'show', status: :created, location: @ifs }
       else
@@ -67,7 +66,6 @@ class IteratedFunctionSystemsController < ApplicationController
   def update
     respond_to do |format|
       if @ifs.update(iterated_function_system_params)
-        @ifs.to_image
         format.html { redirect_to @ifs, notice: 'Iterated function system was successfully updated.' }
         format.json { head :no_content }
       else
@@ -99,7 +97,7 @@ class IteratedFunctionSystemsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def iterated_function_system_params
-      params.require(:iterated_function_system).permit(:name, :description, :transforms, :rec_number, :base_shape)
+      params.require(:iterated_function_system).permit %i[name description transforms rec_number base_shape image]
     end
     def create_ifs
       @ifs = current_user.ifss.new iterated_function_system_params

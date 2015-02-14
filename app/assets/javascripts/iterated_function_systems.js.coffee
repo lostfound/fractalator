@@ -1,124 +1,110 @@
 # Place all the behaviors and hooks related to the matching controller here.
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
+#=require fabric
 jQuery ->
-  get_current_no= =>
-    id= parseInt $(".subheader.current").parents(".transf").attr "data-id"
+  console.log "!"
+  properties = ['width', 'height', 'left', 'top', 'scaleX', 'scaleY', 'angle']
+  @c = new fabric.Canvas 'modeling_canvas', {'selection': false, backgroundColor: "yellow", centeredRotation: true, centeredScaling: true}
+  @z = new fabric.Canvas 'blackbird_fly', {centeredRotation: true, centeredScaling: true}
+  
+  create_rect= (opts)=>
+    opts||={width: 200, height: 200, left: 0, top: 0}
+    opts.stroke = 'black'
+    opts.cornerColor="black"
+    opts.borderColor="black"
+    rect = new fabric.Rect opts
+    rect.setGradient 'fill', {x0: 0, x1: 1, x2:200, y2:200, colorStops: {0: "green", 1: "white"}}
+    @c.add rect
 
-  $("#ifs_form").submit ->
+  for rect in JSON.parse $("#iterated_function_system_transforms").val()
+    create_rect rect
+
+  @c.renderAll()
+  body=$ 'body'
+  body.off 'click', "#rect_up"
+  body.off 'click', "#rect_down"
+  body.off 'click', "#rect_add"
+  body.off 'click', "#rect_del"
+  body.on 'click', "#rect_up", =>
+    rect = @c.getActiveObject()
+    if rect
+      @c.bringForward(rect)
+    false
+  body.on 'click', "#rect_down", =>
+    rect = @c.getActiveObject()
+    if rect
+      @c.sendBackwards(rect)
+    false
+  body.on 'click', "#rect_add", => create_rect()
+  body.on 'click', "#rect_del", =>
+    rect = @c.getActiveObject()
+    if rect
+      rect.remove()
+  body.off 'click', '#submit_form'
+  body.on 'click', '#submit_form', =>
     transforms = []
-    for t in $(".transf")
-      tr=$(t)
-      tr_hash={}
-      tr_hash.num = parseInt tr.attr "data-id"
+    for rect in @c.getObjects()
+      hash = {}
+      for prop in properties
+        hash[prop] = rect[prop]
+      transforms.push hash
+     $("#iterated_function_system_transforms").val JSON.stringify transforms
+     $("#ifs_form").submit()
 
-      for name in ["scale_x", "scale_y", "angle_x", "angle_y", "trans_x", "trans_y"]
-        tr_hash[name] = parseFloat tr.find("[name=#{name}]")[0].value
-      transforms.push tr_hash
-    $(@).find("#iterated_function_system_transforms").val JSON.stringify transforms
-    $(@).find("[type=submit]").hide()
-    $("#fractal_generation_alert").show()
+  @cicrle = new fabric.Circle {radius: 200, left: 0, top: 0, opacity: 0}
+  @square = new fabric.Rect {width: 400, height: 400, left: 0, top: 0, opacity: 0}
+  @baseshapes = [@square, @cicrle]
 
-  transform= (num)=>
-    params=[]
-    for name in ["scale_x", "scale_y", "angle_x", "angle_y", "trans_x", "trans_y"]
-      params[name] = parseFloat $(".transf[data-id=#{num}] [name=#{name}]")[0].value
-    t=[]
-    a = params.scale_x*Math.cos(params.angle_x*Math.PI/180)
-    b = params.scale_x*Math.sin(params.angle_x*Math.PI/180)
-    c = params.scale_y*Math.sin(params.angle_y*Math.PI/180) * -1
-    d = params.scale_y*Math.cos(params.angle_y*Math.PI/180)
-    [a.toFixed(3), b.toFixed(3), c.toFixed(3), d.toFixed(3), params.trans_x.toFixed(3), params.trans_y.toFixed(3)]
+  @z.add @cicrle
+  @z.add @square
+  @images = []
+  create_image= (img, cb)=>
+     new Promise (fulfil, reject) =>
+      fabric.Image.fromURL img, (oimg)=>
+        fulfil(oimg)
 
-  $(".formations").on "change", ".transf input", ->
-    r= $(@).parents(".transf").attr("data-id")
-    p = transform(r)
-    matrix="matrix(#{p.join(",")})"
-    $("use.tr#{r}").attr "transform", matrix
-
-  $("#rec_no").change ->
-    n = parseInt @.value
-    for g in $("defs g")
-      gid = parseInt $(g).attr("id")[3..]
-      if gid > 1 and gid >n
-        $(g).remove()
-    fr=$("defs #rec1")
-    for i in [1..n]
-      if $("defs #rec#{i}").length < 1
-        frr = fr.clone()
-        frr.attr "id", "rec#{i}"
-        frr.find("use").attr "xlink:href", "#rec#{i-1}"
-        frr.find("use").attr "class", "u rec#{i}"
-        $("defs").append frr
+  @rec = 0
+  max_rec= ->
+    parseInt $('#iterated_function_system_rec_number').val()
+  heraks= =>
+    if rec == 0
+      shape = @baseshapes[ parseInt  $('#iterated_function_system_base_shape').val() ]
+      shape.set {opacity: 1}
+      @z.renderAll()
+    rec+=1
+    img = $('#blackbird_fly')[0].toDataURL("image/png")
+    @cicrle.set {'opacity': 0}
+    @square.set {'opacity': 0}
+    simgs=[]
+    for rect in @c.getObjects()
+      simgs.push img
+    Promise.all(simgs.map create_image).then (fabric_images)=>
+      for image in @images
+        image.remove()
+      @images=[]
+      for i in [0...fabric_images.length]
+        rect = @c.getObjects()[i]
+        continue unless rect
+        oimg = fabric_images[i]
+        hash = {id: rect.id}
+        for prop in properties
+          hash[prop] = rect[prop]
+        oimg.set hash
+        @z.add oimg
+        @images.push oimg
+        @z.renderAll()
+      if @rec < max_rec()
+        heraks()
+      else
+        $('#fractal_image').attr 'src', $('#blackbird_fly')[0].toDataURL("image/png")
+        $("#iterated_function_system_image").val $('#blackbird_fly')[0].toDataURL("image/png")
+        for image in @images
+          image.remove()
+        @images=[]
+        @rec=0
+        @z.renderAll()
+        heraks()
         
-        
-    $("use.u").removeAttr "fill"
-    $("#rec#{n} use.u").attr "fill", "black"
-    $("#ifs_show").attr "xlink:href", "#rec#{n}"
-
-  $("#add_transf").click ->
-    id = get_current_no()
-    n = parseInt $(".formations").children().last().attr("data-id")
-    n++
-    if id
-      nt = $(".formations .transf[data-id=#{id}]").clone()
-    else
-      nt = $(".formations").children().last().clone()
-    nt.attr "data-id", n
-    nt.find(".subheader").html("Transformation №#{n}")
-    nt.find(".subheader").attr "href", "#transf#{n}"
-    nt.find(".subheader").removeClass "current"
-    nt.find(".content").attr "id", "transf#{n}"
-    $(".formations").append nt
-    for u in $("use.tr#{id}")
-      uu= $(u).clone()
-      $(uu).attr "class", "u tr#{n}"
-      $(u).parent().append(uu)
-
-  $(".formations").on "click", ".subheader", ->
-    rec_no = $("#rec_no")[0].value
-    id=$(@).parent().attr("data-id")
-    $(".subheader.current").removeClass("current")
-    $(@).addClass("current")
-
-    $("use.u").removeAttr "fill"
-    $("#rec#{rec_no} use.u").attr "fill", "black"
-    $("#rec#{rec_no} use.tr#{id}").attr "fill", "#007095"
-
-  $(".formations").on "click", "[name=destroy]", ->
-    p   = $(@).parents(".transf")
-    id  = parseInt p.attr 'data-id'
-    $(".u.tr#{id}").remove()
-    for t in $(".transf")
-      tr = $(t)
-      tid = parseInt tr.attr 'data-id'
-      if tid > id
-        tr.attr 'data-id', tid-1
-        sh = tr.find('.subheader')
-        sh.attr href="#transf#{tid-1}"
-        sh.html "Transformation №#{tid-1}"
-        for use in $("use.u.tr#{tid}")
-          use.setAttribute "class", "u tr#{tid-1}"
-    p.remove()
-  is_mouse_down=false
-  mouse_start_coords=[0,0]
-  $("#mouse_handler").mousedown (e)->
-    is_mouse_down=true
-    mouse_start_coords=[e.pageX, e.pageY]
-
-  $("#mouse_handler").mouseup (e)->
-    return unless is_mouse_down
-    is_mouse_down = false
-    dlt= [e.pageX - mouse_start_coords[0], e.pageY - mouse_start_coords[1]].map (n)=>(n/300.0).toFixed(3)
-    id= get_current_no()
-    return unless id
-    x = parseFloat $(".transf[data-id=#{id}] [name=trans_x]").val()
-    y = parseFloat $(".transf[data-id=#{id}] [name=trans_y]").val()
-    x+= parseFloat dlt[0]
-    y+= parseFloat dlt[1]
-    $(".transf[data-id=#{id}] [name=trans_x]").val(x.toFixed(3))
-    $(".transf[data-id=#{id}] [name=trans_y]").val(y.toFixed(3))
-    p = transform(id)
-    matrix="matrix(#{p.join(",")})"
-    $("use.tr#{id}").attr "transform", matrix
-
+  heraks()
+  

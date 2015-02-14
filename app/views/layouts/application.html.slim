@@ -9,7 +9,10 @@ html lang="en"
     = stylesheet_link_tag    "application", "data-turbolinks-track" => true
     /= javascript_include_tag "vendor/modernizr", "data-turbolinks-track" => true
     = javascript_include_tag "application", "data-turbolinks-track" => true
-    - if controller_name == "iterated_function_systems"
+    - if content_for? :scripts
+      = yield :scripts
+
+    /- if controller_name == "iterated_function_systems"
       - if ['new', 'edit'].include?action_name
         = javascript_include_tag "iterated_function_systems", "data-turbolinks-track" => true
       - if action_name == 'show'
@@ -19,7 +22,7 @@ html lang="en"
         = javascript_include_tag "ifs_howto", "data-turbolinks-track" => true
       - elsif 'index' == action_name
         = javascript_include_tag "ifs_index", "data-turbolinks-track" => true
-    - elsif controller_name == 'main' and action_name == 'curves'
+    /- elsif controller_name == 'main' and action_name == 'curves'
         = javascript_include_tag "curves", "data-turbolinks-track" => true
         = stylesheet_link_tag    "curves", "data-turbolinks-track" => true
       

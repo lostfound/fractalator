@@ -7,15 +7,12 @@ ul.small-block-grid-1.large-block-grid-3.xlarge-block-grid-4.medium-block-grid-2
         = link_to ifs do 
           = ifs.name
       li.price 
-        - if ifs.image_thumb.nil?
-          = render "svg", ifs: ifs, quality: :max, unique: true
-        - else
           ul.show-for-medium-up.clearing-thumbs data-clearing=""
             li
-              a href="/#{ifs.image}"
-                img src="/#{ifs.image_thumb}"
+              a href="#{ifs.image}"
+                img src="#{ifs.image}"
           = link_to ifs, class: "show-for-small-only" do
-            img src="/#{ifs.image_thumb}"
+            img src="/#{ifs.image}"
       li.description 
         a.like href=""
           = fa_icon 'thumbs-o-up', class: [:left]
@@ -39,4 +36,6 @@ ul.small-block-grid-1.large-block-grid-3.xlarge-block-grid-4.medium-block-grid-2
             ' Edit
 = paginate @ifss
 = render 'nav'
+- content_for :scripts
+  = javascript_include_tag "ifs_index", "data-turbolinks-track" => true
 
