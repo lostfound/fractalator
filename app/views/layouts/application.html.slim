@@ -29,42 +29,45 @@ html lang="en"
       
     = csrf_meta_tags
 
+    - content_for :navigation
+      - if user_signed_in?
+        ul.medium-block-grid-7.large-block-grid-7.header
+          li = link_to :back, class: :item do
+            label Back
+          li = link_to iterated_function_systems_path, class: :item do
+            | Named Fractals
+          li = link_to index_iterated_function_systems_path(id: current_user), class: :item do
+            | My Fractals
+          li = link_to new_iterated_function_system_path, class: :item do
+            | New Fractal
+          - if @ifs and @ifs.id
+            - if action_name != 'edit' and can? :edit, @ifs
+              li = link_to edit_iterated_function_system_path(@ifs), class: :item do
+                label Edit
+            li = link_to new_iterated_function_system_path(clone: @ifs.id), class: :item do
+              label Clone
+            - if action_name != 'show'
+               li = link_to iterated_function_system_path(@ifs), class: :item do
+                label Show
+
+          = link_to  destroy_user_session_path, method: :delete, class: :item do
+            | Exit
   body
     - unless user_signed_in?
       nav.top-bar class="[medium large content]"
         ul.title-area
           li.name
-           h1 
+           h1
             = link_to main_index_path do
               | FRACTALATOR
       = yield 
     - else
-      .off-canvas-wrap data-offcanvas=""
-        .inner-wrap
-          nav.tab-bar
-            section.left-small
-              a.left-off-canvas-toggle.menu-icon href="#" :span
-            section.middle.tab-bar-section
-              h1.title = link_to main_index_path do
-                | Fractalator
-            -if content_for?:right_nav
-              section.right-small
-                a.right-off-canvas-toggle.menu-icon :span
-          aside.left-off-canvas-menu
-            ul.off-canvas-list
-              li :label Fractals
-              - if controller_name == "iterated_function_systems"
-                -if content_for?:right_nav
-                  = yield :right_nav
-              - else
-                li = link_to iterated_function_systems_path do
-                  | IFS
-              li :label My Profile
-              li = link_to 'Sign Out', destroy_user_session_path, method: :delete
-          -if content_for?:right_nav
-            aside.right-off-canvas-menu
-              ul.off-canvas-list
-                = yield :right_nav
-          section.main-section style="min-height: 500px;"
-            = yield
+      h1.text-center#fractalator  Fractalator
+      = yield :navigation
+        
+      section.main-section 
+        /style="min-height: 500px;"
+        = yield
+      = yield :navigation
+      h1.text-center#fractalator  Fractalator
         

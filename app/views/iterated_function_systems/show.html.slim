@@ -2,7 +2,7 @@ p#notice = notice
 .row
   .medium-6.columns.ifs data-id="#{@ifs.id}"
     h2
-      = @ifs.name
+      = @ifs.name.to_s.capitalize
       - if @ifs.user.name
         span.label.round = "by #{@ifs.user.name}"
 

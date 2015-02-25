@@ -3,25 +3,52 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 #=require fabric
 jQuery ->
-  console.log "!"
-  properties = ['width', 'height', 'left', 'top', 'scaleX', 'scaleY', 'angle']
+  body=$ 'body'
+  properties = ['width', 'height', 'left', 'top', 'scaleX', 'scaleY', 'angle', 'flipX', 'flipY']
   @c = new fabric.Canvas 'modeling_canvas', {'selection': false, backgroundColor: "yellow", centeredRotation: true, centeredScaling: true}
   @z = new fabric.Canvas 'blackbird_fly', {centeredRotation: true, centeredScaling: true}
+
+  @c.on 'object:selected', (e)=>
+    rect = e.target
+    $('#flip_x').prop 'checked', rect.getFlipX()
+    $('#flip_y').prop 'checked', rect.getFlipY()
+    $("#opts_for_selected").show()
+
+  body.off 'change', '#flip_x'
+  body.off 'change', '#flip_y'
+  body.on 'change', '#flip_x', =>
+    console.log "!"
+    rect = @c.getActiveObject()
+    if rect
+      console.log $('#flip_x').prop 'checked'
+      rect.set { flipX: $('#flip_x').prop 'checked' }
+  body.on 'change', '#flip_y', =>
+    rect = @c.getActiveObject()
+    if rect
+      rect.set { flipY: $('#flip_y').prop 'checked' }
+  
   
   create_rect= (opts)=>
+    if opts
+      o={}
+      for prop in properties
+        o[prop] = opts[prop] if opts[prop] != undefined
+      opts = o
+
+      #opts = o
     opts||={width: 200, height: 200, left: 0, top: 0}
     opts.stroke = 'black'
     opts.cornerColor="black"
     opts.borderColor="black"
     rect = new fabric.Rect opts
-    rect.setGradient 'fill', {x0: 0, x1: 1, x2:200, y2:200, colorStops: {0: "green", 1: "white"}}
+    rect.setGradient 'fill', {x0: 0, x1: 1, x2:200, y2:200, colorStops: {0: "rgba(10, 20, 30, 0.5)", 1: "white"}}
     @c.add rect
 
   for rect in JSON.parse $("#iterated_function_system_transforms").val()
     create_rect rect
 
+  
   @c.renderAll()
-  body=$ 'body'
   body.off 'click', "#rect_up"
   body.off 'click', "#rect_down"
   body.off 'click', "#rect_add"
@@ -36,7 +63,8 @@ jQuery ->
     if rect
       @c.sendBackwards(rect)
     false
-  body.on 'click', "#rect_add", => create_rect()
+  body.on 'click', "#rect_add", =>
+    create_rect(@c.getActiveObject())
   body.on 'click', "#rect_del", =>
     rect = @c.getActiveObject()
     if rect

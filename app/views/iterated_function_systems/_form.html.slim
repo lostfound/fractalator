@@ -27,16 +27,30 @@
     
 .row
   .large-6.medium-6.columns
-    button.button#rect_up up
-    button.button#rect_down down
-    button.button#rect_add add
-    button.button#rect_del del
+    .button#rect_up up
+    .button#rect_down down
+    .button#rect_add add
+    .button#rect_del del
     canvas#modeling_canvas width="400" height="400" style="border-color: black; border-style: solid;"
+    div
+      ul.small-block-grid-4#opts_for_selected style="display: none"
+        li
+          | Flip X
+          .switch
+            = check_box_tag :flip_x
+            = label_tag :flip_x do
+                | Flip X
+        li
+          | Flip Y
+          .switch
+            = check_box_tag :flip_y
+            = label_tag :flip_y do
+                | Flip Y
     /.ifs_preview
       == render 'svg', ifs: @ifs, r: 1, show_coords: true
       #mouse_handler
   .large-6.medium-6.columns
-    button#submit_form Submit
+    .button#submit_form Submit
     img#fractal_image  style="border-color: black; border-style: dotted;"
     canvas#blackbird_fly width="400" height="400" style="border-color: black; border-style: dotted; display:none"
 - content_for :scripts

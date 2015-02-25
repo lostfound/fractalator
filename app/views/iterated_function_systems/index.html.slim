@@ -1,37 +1,54 @@
-h1 IFS Gallery
-= paginate @ifss
-ul.small-block-grid-1.large-block-grid-3.xlarge-block-grid-4.medium-block-grid-2
+ul.inline-list
+  - if @owner == current_user
+    li: h3.text-center My Fractals
+  - elsif @owner
+    li: h3.text-center #{@owner.name||'Nonamed guy'}'s Gallery
+  - else
+    li: h3.text-center Gallery
+    li: .sub-nav
+      dt SORT:
+      - if session[:ifs_sort] == 'fresh'
+        dd.active = link_to iterated_function_systems_path(sort: :fresh) do
+          | fresh
+        dd = link_to iterated_function_systems_path(sort: :cools) do
+          | cools
+      - else
+        dd = link_to iterated_function_systems_path(sort: :fresh) do
+          | fresh
+        dd.active = link_to iterated_function_systems_path(sort: :cools) do
+          | cools
+  li = paginate @ifss
+ul.small-block-grid-1.large-block-grid-4.xlarge-block-grid-6.medium-block-grid-3.header
   - @ifss.each do |ifs|
     li :ul.ifs.pricing-table data-id="#{ifs.id}"
       li.title 
         = link_to ifs do 
-          = ifs.name
-      li.price 
-          ul.show-for-medium-up.clearing-thumbs data-clearing=""
-            li
-              a href="#{ifs.image}"
-                img src="#{ifs.image}"
-          = link_to ifs, class: "show-for-small-only" do
-            img src="/#{ifs.image}"
-      li.description 
-        a.like href=""
-          = fa_icon 'thumbs-o-up', class: [:left]
-        a.dislike href=""
-          = fa_icon 'thumbs-o-down', class: [:right]
-        strong.score = ifs.score
-        '
-        = fa_icon (ifs.score>=0)?'smile-o':'frown-o', class: :score_currency
+          = ifs.name.capitalize
+      li.price style="position: relative"
+        = link_to ifs do#, class: "show-for-small-only" do
+          img src="#{ifs.image}"
+        .like_field
+          a.like href=""
+            = fa_icon 'thumbs-o-up', class: [:left]
+          strong.score = ifs.score
+          '
+          = fa_icon (ifs.score>=0)?'smile-o':'frown-o', class: :score_currency
+          a.dislike href=""
+            = fa_icon 'thumbs-o-down', class: [:right]
+          - if ifs.user.name
+            = link_to index_iterated_function_systems_path(id: ifs.user_id) do
+              span.label.round = "by #{ifs.user.name}"
       //= ifs.description
       li.cta-button
-        = link_to new_iterated_function_system_path(clone: ifs.id), class: [:button, :round, :success] do
+        = link_to new_iterated_function_system_path(clone: ifs.id), class: %i[button small success] do
           = fa_icon 'code-fork'
           | Clone
         - if ifs.user == current_user
           = link_to ifs, data: {:confirm => 'Are you sure?'}, :method => :delete,
-                    class: [:button, :round, :alert] do
+                    class: %i[button small alert] do
             = fa_icon "times"
             ' Erase
-          = link_to edit_iterated_function_system_path(ifs), class: [:button, :round] do
+          = link_to edit_iterated_function_system_path(ifs), class: %i[button small] do
             = fa_icon 'cutlery'
             ' Edit
 = paginate @ifss

@@ -2,6 +2,7 @@ class IteratedFunctionSystemsController < ApplicationController
   before_action :set_iterated_function_system, only: [:show, :edit, :update, :destroy, :like]
   before_action :create_ifs, only: [:create]
   load_and_authorize_resource except: :like
+  PER_PAGE=16
 
   # GET /iterated_function_systems
   # GET /iterated_function_systems.json
@@ -9,13 +10,24 @@ class IteratedFunctionSystemsController < ApplicationController
     page = params[:page]
     page||=1
     unless params[:id]
-      @ifss = IteratedFunctionSystem.where.not(name: '').order("score desc").order("created_at DESC").page(page).per(12)
+      case params[:sort]
+      when 'fresh'
+        session[:ifs_sort] = 'fresh'
+      when 'cools'
+        session[:ifs_sort] = 'cools'
+      end
+      if session[:ifs_sort] == 'fresh'
+        @ifss = IteratedFunctionSystem.named.fresh.page(page).per(PER_PAGE)
+      else
+        @ifss = IteratedFunctionSystem.named.likest.fresh.page(page).per(PER_PAGE)
+      end
     else
       uid = params[:id].to_i
-      if current_user.id != uid
-        @ifss = User.find(uid).ifss.where.not(name: '').order("score desc").order("created_at DESC").page(page).per(12)
+      @owner = User.find uid
+      unless current_user.id == uid
+        @ifss = @owner.ifss.named.fresh.page(page).per(PER_PAGE)
       else
-        @ifss = User.find(uid).ifss.order("created_at DESC").page(page).per(12)
+        @ifss = @owner.ifss.fresh.page(page).per(PER_PAGE)
       end
     end
   end

@@ -4,7 +4,8 @@ class Ability
   def initialize(user)
     user ||= User.new
     if user.id
-      can :read, IteratedFunctionSystem
+      can :read, IteratedFunctionSystem, user_id: user.id, name: ''
+      can :read, IteratedFunctionSystem.named
       can :create, IteratedFunctionSystem
       can :manage, IteratedFunctionSystem, user_id: user.id
     end
