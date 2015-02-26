@@ -1,18 +1,13 @@
 require 'fileutils'
 require 'base64'
-class IteratedFunctionSystem < ActiveRecord::Base
-  belongs_to :user
-  #validates :name,  presence: true, allow_blank: false
+class IteratedFunctionSystem < Fractal
   after_initialize :default_values
-  #before_destroy :rm_images
-  before_validation :strips
-  after_save :save_image
-  after_create :save_image
-  scope :named, -> {where.not name: ''}
-  scope :fresh, -> {order "created_at desc"}
-  scope :likest, ->{order "score desc"}
+  #after_save :save_image
+  #after_create :save_image
+  #scope :named, -> {where.not name: ''}
+  #scope :fresh, -> {order "created_at desc"}
+  #scope :likest, ->{order "score desc"}
 
-  has_many :likes, as: :likeable
   SHAPES=[:rect, :circle]
   def save_image
     if image and image.start_with? 'data:image'
@@ -27,9 +22,6 @@ class IteratedFunctionSystem < ActiveRecord::Base
     end
   end
 private
-  def strips
-    self.name.try(:strip!)
-  end
   def default_values
     self.transforms||=[ {width: 200, height: 200, left: 0, top: 0},
        {width: 200, height: 200, left: 200, top: 200},

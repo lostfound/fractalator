@@ -26,7 +26,8 @@ ul.small-block-grid-1.large-block-grid-4.xlarge-block-grid-6.medium-block-grid-3
           = ifs.name.capitalize
       li.price style="position: relative"
         = link_to ifs do#, class: "show-for-small-only" do
-          img src="#{ifs.image}"
+          = image_tag ifs.image_url
+          //img src="#{ifs.image}"
         .like_field
           a.like href=""
             = fa_icon 'thumbs-o-up', class: [:left]
