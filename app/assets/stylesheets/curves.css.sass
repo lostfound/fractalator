@@ -1,0 +1,27 @@
+$primary-color: #008CBA
+
+.points
+  circle
+    fill: white
+    stroke: red
+    fill-opacity: 0.5
+  circle.center
+    stroke: green
+  circle.start
+    stroke: blue
+  circle.finish
+    stroke: lime
+  circle[selected]
+    fill: orange
+
+#pnumbers text
+  fill: black
+
+defs
+  marker
+    stroke: none
+    fill: $primary-color
+
+#lines line
+  stroke: $primary-color
+  stroke-width: 2
