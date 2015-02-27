@@ -32,8 +32,8 @@
     .button#rect_add add
     .button#rect_del del
     canvas#modeling_canvas width="400" height="400" style="border-color: black; border-style: solid;"
-    div
-      ul.small-block-grid-4#opts_for_selected style="display: none"
+    #opts_for_selected style="display: none"
+      ul.small-block-grid-4
         li
           | Flip X
           .switch
@@ -46,6 +46,9 @@
             = check_box_tag :flip_y
             = label_tag :flip_y do
                 | Flip Y
+        li
+          | Color
+          input type="text" id="color" style="width:80px; display: inline;" value="#000000"
     /.ifs_preview
       == render 'svg', ifs: @ifs, r: 1, show_coords: true
       #mouse_handler
@@ -54,4 +57,5 @@
     img#fractal_image  style="border-color: black; border-style: dotted;"
     canvas#blackbird_fly width="400" height="400" style="border-color: black; border-style: dotted; display:none"
 - content_for :scripts
+  = stylesheet_link_tag    "iterated_function_systems", "data-turbolinks-track" => true
   = javascript_include_tag "iterated_function_systems", "data-turbolinks-track" => true

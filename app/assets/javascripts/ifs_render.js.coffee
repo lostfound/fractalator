@@ -25,7 +25,7 @@ class IfsRenderer
   # ifsr.heraks()
 
   constructor: ->
-    @properties = ['width', 'height', 'left', 'top', 'scaleX', 'scaleY', 'angle', 'flipX', 'flipY', 'x', 'y']
+    @properties = ['width', 'height', 'left', 'top', 'scaleX', 'scaleY', 'angle', 'flipX', 'flipY', 'x', 'y', 'color']
     @z = new fabric.Canvas 'blackbird_fly', {centeredRotation: true, centeredScaling: true}
     @cicrle = new fabric.Circle {radius: 200, left: 0, top: 0, opacity: 0}
     @square = new fabric.Rect {width: 400, height: 400, left: 0, top: 0, opacity: 0}
@@ -72,8 +72,10 @@ class IfsRenderer
   max_rec: ->
     parseInt $('#iterated_function_system_rec_number').val()
 
+  shape_id: ->
+      parseInt  $('#iterated_function_system_base_shape').val()
   baseshape: ->
-      @baseshapes[ parseInt  $('#iterated_function_system_base_shape').val() ]
+      @baseshapes[ @shape_id() ]
 
   rect_dup: (rect)->
     hash = {}
@@ -86,20 +88,39 @@ class IfsRenderer
       fabric.Image.fromURL img, (oimg)=>
         fulfil(oimg)
 
+  first_image: (color, sid)->
+    @colors[sid]||={}
+    if img = @colors[sid][color]
+      return img
+    
+    @cicrle.set {'opacity': 0, fill: color}
+    @square.set {'opacity': 0, fill: color}
+    shape = @baseshape()
+    shape.set {opacity: 1}
+    @z.renderAll()
+    @colors[sid][color] = $('#blackbird_fly')[0].toDataURL("image/png")
+
+    
   heraks: (on_done)->
+    simgs=[]
     if @rec == 0
       @rendered_revision = @revision
-      shape = @baseshape()
-      shape.set {opacity: 1}
-      @z.renderAll()
+      @colors = {}
+      sid = @shape_id()
+      for rect in @rects
+        @first_image rect.color, sid
+      @first_image "#000", sid
+
+      @cicrle.set {'opacity': 0, fill: color}
+      @square.set {'opacity': 0, fill: color}
+      for rect in @rects
+        simgs.push @colors[sid][rect.color]
+    else
+      img = $('#blackbird_fly')[0].toDataURL("image/png")
+      #Create images
+      for rect in @rects
+        simgs.push img
     @rec+=1
-    img = $('#blackbird_fly')[0].toDataURL("image/png")
-    @cicrle.set {'opacity': 0}
-    @square.set {'opacity': 0}
-    simgs=[]
-    #Create images
-    for rect in @rects
-      simgs.push img
 
     Promise.all(simgs.map @create_image).then (fabric_images)=>
       for image in @images

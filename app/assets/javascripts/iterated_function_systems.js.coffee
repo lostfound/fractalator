@@ -1,33 +1,19 @@
 # Place all the behaviors and hooks related to the matching controller here.
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
-#=require fabric
-#=require ifs_render
+#= require fabric
+#= require ifs_render
+#= require jquery-ui/core
+#= require jquery-ui/widget
+#= require jquery-ui/mouse
+#= require jquery-ui/position
+#= require jquery-ui/button
+#  require jquery-ui
+#= require evol.colorpicker
 jQuery ->
   body=$ 'body'
-  properties = ['width', 'height', 'left', 'top', 'scaleX', 'scaleY', 'angle', 'flipX', 'flipY', 'x', 'y']
+  properties = ['width', 'height', 'left', 'top', 'scaleX', 'scaleY', 'angle', 'flipX', 'flipY', 'x', 'y', 'color']
   @c = new fabric.Canvas 'modeling_canvas', {'selection': false, backgroundColor: "yellow", centeredRotation: true, centeredScaling: true}
-
-  @c.on 'object:selected', (e)=>
-    rect = e.target
-    $('#flip_x').prop 'checked', rect.getFlipX()
-    $('#flip_y').prop 'checked', rect.getFlipY()
-    $("#opts_for_selected").show()
-
-  body.off 'change', '#flip_x'
-  body.off 'change', '#flip_y'
-  body.on 'change', '#flip_x', =>
-    rect = @c.getActiveObject()
-    if rect
-      rect.set { flipX: $('#flip_x').prop 'checked' }
-      @ifs_eng.render (@c.getObjects())
-
-  body.on 'change', '#flip_y', =>
-    rect = @c.getActiveObject()
-    if rect
-      rect.set { flipY: $('#flip_y').prop 'checked' }
-      @ifs_eng.render (@c.getObjects())
-  
   
   create_rect= (opts)=>
     if opts
@@ -38,6 +24,7 @@ jQuery ->
 
       #opts = o
     opts||={width: 200, height: 200, left: 0, top: 0}
+    opts.color||='#000'
     opts.stroke = 'black'
     opts.cornerColor="black"
     opts.borderColor="black"
@@ -57,16 +44,16 @@ jQuery ->
 
   # UP
   body.on 'click', "#rect_up", =>
-    rect = @c.getActiveObject()
-    if rect
+    if rect = @c.getActiveObject()
       @c.bringForward(rect)
+      @ifs_eng.render (@c.getObjects())
     false
 
   # DOWN
   body.on 'click', "#rect_down", =>
-    rect = @c.getActiveObject()
-    if rect
+    if rect = @c.getActiveObject()
       @c.sendBackwards(rect)
+      @ifs_eng.render (@c.getObjects())
     false
 
   # ADD
@@ -80,7 +67,39 @@ jQuery ->
     if rect
       rect.remove()
       @ifs_eng.render (@c.getObjects())
+  # Flips
+  body.off 'change', '#flip_x'
+  body.off 'change', '#flip_y'
+  body.on 'change', '#flip_x', =>
+    rect = @c.getActiveObject()
+    if rect
+      rect.set { flipX: $('#flip_x').prop 'checked' }
+      @ifs_eng.render (@c.getObjects())
 
+  @c.on 'object:selected', (e)=>
+    rect = e.target
+    $('#flip_x').prop 'checked', rect.getFlipX()
+    $('#flip_y').prop 'checked', rect.getFlipY()
+    # Color picker
+    $("#color").colorpicker "val", rect.color
+    $("#opts_for_selected").show()
+
+
+  body.on 'change', '#flip_y', =>
+    rect = @c.getActiveObject()
+    if rect
+      rect.set { flipY: $('#flip_y').prop 'checked' }
+      @ifs_eng.render (@c.getObjects())
+
+  # Color picker
+  $("#color").colorpicker()# {parts: 'full', alpha: true, showOn: 'both', buttonColorize: true, showNoneButton: true}
+  body.off "change", "#color"
+  body.on  "change.color", "#color", =>
+    if rect = @c.getActiveObject()
+      rect.color = $("#color").val()
+      @ifs_eng.render @c.getObjects(), true
+
+  #SUBMIT
   body.off 'click', '#submit_form'
   body.on 'click', '#submit_form', =>
     transforms = []

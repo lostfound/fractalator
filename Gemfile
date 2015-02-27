@@ -33,6 +33,7 @@ gem 'jbuilder', '~> 1.2'
 
 gem 'devise'
 gem 'cancan'
+gem 'jquery-ui-rails'
 
 gem 'carrierwave'
 gem 'rmagick'
