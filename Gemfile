@@ -23,6 +23,7 @@ gem 'jquery-rails'
 
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 gem 'turbolinks'
+gem "angular-turbolinks"
 gem 'jquery-turbolinks'
 gem 'slim-rails'
 gem 'foundation-rails'
@@ -34,6 +35,7 @@ gem 'jbuilder', '~> 1.2'
 gem 'devise'
 gem 'cancan'
 gem 'jquery-ui-rails'
+gem 'angularjs-rails'
 
 gem 'carrierwave'
 gem 'rmagick'

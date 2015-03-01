@@ -7,26 +7,10 @@ html lang="en"
     title = content_for?(:title) ? yield(:title) : "Fractalator"
 
     = stylesheet_link_tag    "application", "data-turbolinks-track" => true
-    /= javascript_include_tag "vendor/modernizr", "data-turbolinks-track" => true
     = javascript_include_tag "application", "data-turbolinks-track" => true
     - if content_for? :scripts
       = yield :scripts
 
-    /- if controller_name == "iterated_function_systems"
-      - if ['new', 'edit'].include?action_name
-        = javascript_include_tag "iterated_function_systems", "data-turbolinks-track" => true
-      - if action_name == 'show'
-        = javascript_include_tag "ifs_animation", "data-turbolinks-track" => true
-        = javascript_include_tag "ifs_index", "data-turbolinks-track" => true
-      - elsif action_name == 'howto'
-        = javascript_include_tag "ifs_howto", "data-turbolinks-track" => true
-      - elsif 'index' == action_name
-        = javascript_include_tag "ifs_index", "data-turbolinks-track" => true
-    /- elsif controller_name == 'main' and action_name == 'curves'
-        = javascript_include_tag "curves", "data-turbolinks-track" => true
-        = stylesheet_link_tag    "curves", "data-turbolinks-track" => true
-      
-      
     = csrf_meta_tags
 
     - content_for :navigation
@@ -65,9 +49,10 @@ html lang="en"
       h1.text-center#fractalator  Fractalator
       = yield :navigation
         
-      section.main-section 
+      section.main-section#main_section
         /style="min-height: 500px;"
         = yield
-      = yield :navigation
-      h1.text-center#fractalator  Fractalator
+      footer
+        = yield :navigation
+        h1.text-center#fractalator  Fractalator
         

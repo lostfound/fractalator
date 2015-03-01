@@ -10,15 +10,27 @@
 #= require jquery-ui/button
 #  require jquery-ui
 #= require evol.colorpicker
+
+angular.module('ifs',["controllers"])
+controllers = angular.module('controllers',[])
+controllers.controller("ifs_controller", [ '$scope',
+  (scope)->
+    scope.depth = 8
+    scope.flipX = false
+    scope.flipY = false
+    scope.transformation = undefined
+  ])
 jQuery ->
+  @ifs_scope = $('[ng-controller=ifs_controller]').scope()
+
   body=$ 'body'
-  properties = ['width', 'height', 'left', 'top', 'scaleX', 'scaleY', 'angle', 'flipX', 'flipY', 'x', 'y', 'color']
+    
   @c = new fabric.Canvas 'modeling_canvas', {'selection': false, backgroundColor: "yellow", centeredRotation: true, centeredScaling: true}
   
   create_rect= (opts)=>
     if opts
       o={}
-      for prop in properties
+      for prop in ifs_properties
         o[prop] = opts[prop] if opts[prop] != undefined
       opts = o
 
@@ -37,6 +49,62 @@ jQuery ->
 
   
   @c.renderAll()
+
+  #Angular
+  @ifs_scope.$watch 'transformation', (tfm, old) =>
+    for prop in ['flipX', 'flipY']
+      if tfm
+        @ifs_scope[prop] = tfm[prop]
+      else
+        @ifs_scope[prop] = undefined
+      console.log @ifs_scope.base_shape
+
+  lost_selected= =>
+    @ifs_scope.transformation = undefined
+    @ifs_scope.$apply()
+  @c.on 'selection:cleared', lost_selected
+  @c.on 'object:removed', lost_selected
+    
+  @c.on 'object:selected', (e)=>
+    @ifs_scope.transformation = @c.getActiveObject()
+    @ifs_scope.$apply()
+    rect = e.target
+    #$('#flip_x').prop 'checked', rect.getFlipX()
+    $('#flip_y').prop 'checked', rect.getFlipY()
+    # Color picker
+    $("#color").colorpicker "val", rect.color
+
+  # Recursions
+  @ifs_scope.$watch 'depth', (depth, old_value)=>
+    @ifs_eng.render @c.getObjects(), true
+
+  #Shapes
+  @ifs_scope.$watch 'base_shape', (nv,ov)=>
+    @ifs_eng.render @c.getObjects(), true
+
+  # Flips
+  @ifs_scope.$watch 'flipX', (value, old) =>
+    if @ifs_scope.transformation and @ifs_scope.transformation.flipX != value
+      @ifs_scope.transformation.set {flipX: value}
+      @ifs_eng.render (@c.getObjects())
+
+  @ifs_scope.$watch 'flipY', (value, old) =>
+    if @ifs_scope.transformation and @ifs_scope.transformation.flipY != value
+      @ifs_scope.transformation.set {flipY: value}
+      @ifs_eng.render (@c.getObjects())
+
+  @c.on "object:modified", =>
+    @ifs_eng.render (@c.getObjects())
+
+  @c.on "object:scaling", =>
+    @ifs_eng.render (@c.getObjects())
+
+  @c.on "object:rotating", =>
+    @ifs_eng.render (@c.getObjects())
+
+  @c.on "object:moving", =>
+    @ifs_eng.render (@c.getObjects())
+
   body.off 'click', "#rect_up"
   body.off 'click', "#rect_down"
   body.off 'click', "#rect_add"
@@ -67,29 +135,6 @@ jQuery ->
     if rect
       rect.remove()
       @ifs_eng.render (@c.getObjects())
-  # Flips
-  body.off 'change', '#flip_x'
-  body.off 'change', '#flip_y'
-  body.on 'change', '#flip_x', =>
-    rect = @c.getActiveObject()
-    if rect
-      rect.set { flipX: $('#flip_x').prop 'checked' }
-      @ifs_eng.render (@c.getObjects())
-
-  @c.on 'object:selected', (e)=>
-    rect = e.target
-    $('#flip_x').prop 'checked', rect.getFlipX()
-    $('#flip_y').prop 'checked', rect.getFlipY()
-    # Color picker
-    $("#color").colorpicker "val", rect.color
-    $("#opts_for_selected").show()
-
-
-  body.on 'change', '#flip_y', =>
-    rect = @c.getActiveObject()
-    if rect
-      rect.set { flipY: $('#flip_y').prop 'checked' }
-      @ifs_eng.render (@c.getObjects())
 
   # Color picker
   $("#color").colorpicker()# {parts: 'full', alpha: true, showOn: 'both', buttonColorize: true, showNoneButton: true}
@@ -105,32 +150,17 @@ jQuery ->
     transforms = []
     for rect in @c.getObjects()
       hash = {}
-      for prop in properties
+      for prop in ifs_properties
         hash[prop] = rect[prop]
       transforms.push hash
      $("#iterated_function_system_transforms").val JSON.stringify transforms
      $("#ifs_form").submit()
 
-  # RECURSIONS
-  body.off 'keyup', '#iterated_function_system_rec_number'
-  body.on 'keyup', '#iterated_function_system_rec_number', =>
-    @ifs_eng.render @c.getObjects(), true
-  body.off 'change', '#iterated_function_system_rec_number'
-  body.on 'change', '#iterated_function_system_rec_number', =>
-    @ifs_eng.render @c.getObjects(), true
-  body.off 'change', '#iterated_function_system_base_shape'
-  body.on  'change', '#iterated_function_system_base_shape', =>
-    @ifs_eng.render @c.getObjects(), true
 
-  @c.on "object:modified", =>
-    @ifs_eng.render (@c.getObjects())
-  @c.on "object:scaling", =>
-    @ifs_eng.render (@c.getObjects())
-  @c.on "object:rotating", =>
-    @ifs_eng.render (@c.getObjects())
-  @c.on "object:moving", =>
-    @ifs_eng.render (@c.getObjects())
+
 
   @ifs_eng = new IfsRenderer
   @ifs_eng.render (@c.getObjects())
+
+
   

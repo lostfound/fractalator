@@ -1,19 +1,31 @@
-p#notice = notice
-.row
-  .medium-6.columns.ifs data-id="#{@ifs.id}"
-    h2
-      = @ifs.name.to_s.capitalize
-      - if @ifs.user.name
-        span.label.round = "by #{@ifs.user.name}"
+.row ng-app="ifs" ng-controller="ifs_controller" ng-init="transforms=#{@ifs.transforms}; depth=#{@ifs.rec_number}; base_shape=#{@ifs.base_shape}"
+  p#notice = notice
+  h2
+    = @ifs.name.to_s.capitalize
+    - if @ifs.user.name
+      span.label.round = "by #{@ifs.user.name}"
 
-    = label_tag :max_rec do
-      | Depth:
-    = text_field_tag :max_rec, @ifs.rec_number, style: "width: 100px;"
+
+  .medium-6.columns.ifs data-id="#{@ifs.id}"
     canvas#blackbird_fly width="400" height="400" style="border-color: black; border-style: dotted"
-    = hidden_field_tag :transforms, @ifs.transforms
     = hidden_field_tag :base_shape, @ifs.base_shape
 
-    .likes
+  .medium-6.columns
+    = label_tag :max_rec do
+      | Depth:
+    = number_field_tag :depth, @ifs.rec_number, style: "width: 100px;", "ng-model" => 'depth'
+    = label_tag :timeout do
+      | Timeout (ms)
+    = number_field_tag :timeout, nil, 'ng-model' => 'timeout', style: "width: 100px;"
+    | Show Transformations
+    .switch
+      input#show_transf ng-model="show_transf" type="checkbox"
+      = label_tag :show_transf do
+        | Show Transformations
+    - unless @ifs.description.empty?
+      .panel
+        = markdown(@ifs.description).html_safe
+    .likes.ifs data-id="#{@ifs.id}"
       a.like href=""
         = fa_icon 'thumbs-o-up', class: [:left]
       strong.score = @ifs.score
@@ -23,12 +35,6 @@ p#notice = notice
       a.dislike href=""
         = fa_icon 'thumbs-o-down'
 
-  .medium-6.columns
-    - unless @ifs.description.empty?
-      .panel
-        = markdown(@ifs.description).html_safe
-    - unless ["", nil].include?@ifs.image
-      img src="#{@ifs.image}"
 
 == render 'nav'
 - content_for :scripts
