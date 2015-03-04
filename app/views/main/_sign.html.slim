@@ -1,20 +1,15 @@
-fieldset
-  legend
-    dl.tabs data-tab=""
-      dd class="#{(%w[index sign_in].include?action_name)?'active':''}"
-        a href="#sign_in_tab" Sign In
-      dd class="#{'sign_up' == action_name ? 'active' : ''}"
-        a href="#sign_up_tab" Sign Up
-  .tabs-content
-    .content#sign_in_tab class="#{(%w[index sign_in].include?action_name)?'active':''}"
+.row.centered#login_page
+  .half#sign_in_tab class="#{(%w[index sign_in].include?action_name)?'active':''}"
       .social
-        h5 Sign In with:
+        h2 Login
+        | Sign In with
+        '
         /= link_to user_omniauth_authorize_path(:vkontakte), class: [:button, :small]
           = fa_icon :vk
         = link_to user_omniauth_authorize_path(:twitter), class: [:button, :small], style: "margin-right: 10px"
           | twitter
           /= fa_icon :twitter
-      h5 or
+        | or
       .f
         = form_for @sin_user||User.new, url: main_signIn_path do |f|
           = f.label :email do
@@ -24,7 +19,10 @@ fieldset
             | Password
             = f.password_field :password, autocomplete: "off", required: true
           = f.submit "Sign In", class: :button
-    .content#sign_up_tab class="#{'sign_up' == action_name ? 'active' : ''}"
+          = f.check_box :remember_me
+          = f.label :remember_me
+  .half#sign_up_tab class="#{'sign_up' == action_name ? 'active' : ''}"
+      h3 Register an account
       - if @sup_user
         .panel.callout
           ul

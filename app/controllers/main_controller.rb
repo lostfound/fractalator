@@ -12,7 +12,10 @@ class MainController < ApplicationController
     end
     user = User.find_by_email(params[:user][:email])
     if user and user.valid_password?(params[:user][:password])
+      user.remember_me = (params[:user][:remember_me].to_i == 1)
+      p user.remember_me
       sign_in user
+      p params[:user][:remember_me].to_i
       return redirect_to main_index_path
     end
     @sin_user = User.new(email: params[:user][:email])
