@@ -109,7 +109,8 @@ $.widget( "evol.colorpicker", {
 					style=(color!==null)?('background-color:'+color):'';
 				}
 				e.addClass('colorPicker '+this._id)
-					.wrap('<div style="display: inline; width:'+(this.options.hideButton?this.element.width():this.element.width()+32)+'px;'+
+					//.wrap('<div style="display: inline; width:'+(this.options.hideButton?this.element.width():this.element.width()+32)+'px;'+
+					.wrap('<div style="display: inline; '+
 						(isIE?'margin-bottom:-21px;':'')+
 						(isMoz?'padding:1px 0;':'')+
 						'"></div>')

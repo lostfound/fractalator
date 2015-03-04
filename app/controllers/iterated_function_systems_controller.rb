@@ -52,7 +52,12 @@ class IteratedFunctionSystemsController < ApplicationController
   # GET /iterated_function_systems/new
   def new
     @ifs = current_user.ifss.new
-    @ifs.transforms = IteratedFunctionSystem.find(params[:clone]).transforms if params[:clone]
+    if params[:clone]
+      parent = IteratedFunctionSystem.find(params[:clone])
+      @ifs.transforms = parent.transforms 
+      @ifs.rec_number = parent.rec_number
+      @ifs.parent_id  = parent.id
+    end
   end
 
   # GET /iterated_function_systems/1/edit
@@ -109,7 +114,7 @@ class IteratedFunctionSystemsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def iterated_function_system_params
-      params.require(:iterated_function_system).permit %i[name description transforms rec_number base_shape image]
+      params.require(:iterated_function_system).permit %i[name description transforms rec_number base_shape image parent_id]
     end
     def create_ifs
       @ifs = current_user.ifss.new iterated_function_system_params

@@ -87,6 +87,7 @@ class IfsRenderer
       for rect in @rects
         frect = new fabric.Rect rect
         frect.set {stroke: 'red', fill: null}
+        frect.setGradient 'fill', {x0: 0, x1: 1, x2:200, y2:200, colorStops: {0: "rgba(10, 20, 30, 0.5)", 1: "white"}}
         @z.add frect
         @transformations.push frect
 

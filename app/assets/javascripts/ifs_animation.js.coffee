@@ -20,4 +20,8 @@ jQuery ->
       @ifs_eng.render  @ifs_scope.transforms, true
     else
       @ifs_eng.render  @ifs_scope.transforms, true
+  $("body").off 'click', '#blackbird_fly'
+  $("body").on 'click', '#blackbird_fly', =>
+    @ifs_eng.render  @ifs_scope.transforms, true
+    
       

@@ -4,20 +4,24 @@
 #ifs_editor ng-app="ifs" ng-controller="ifs_controller" ng-init="shapes=#{shapes.to_json}"
   = form_for @ifs, html: {id: :ifs_form} do |f|
     .row
-      .small-2.column ng-init="base_shape=#{@ifs.base_shape}"
+      .medium-2.small-4.column ng-init="base_shape=#{@ifs.base_shape}"
         = f.label :base_shape
         select#iterated_function_system_base_shape ng-model="base_shape" ng-options="shape.id as shape.name for shape in shapes" name="iterated_function_system[base_shape]"
-      .small-2.columns
+      .medium-2.small-4.columns
         = f.label :name
         = f.text_field :name
-      .small-2.columns ng-init="depth=#{@ifs.rec_number}"
+      .medium-2.small-4.columns ng-init="depth=#{@ifs.rec_number}"
         = f.label :depth
         = f.number_field :rec_number, 'ng-model' => 'depth' 
-      .small-6.columns
+      .medium-4.small-8.columns
         = f.label :description
         = f.text_area :description
+      .medium-2.small-4.columns
+        br
+        .button#submit_form Submit
       = f.hidden_field :transforms
       = f.hidden_field :image
+      = f.hidden_field :parent_id
     .row
       .small-9.columns
         - if @ifs.errors.any?
@@ -27,8 +31,8 @@
               - @ifs.errors.full_messages.each do |message|
                 li = message
       
-  .row
-    .large-6.medium-6.columns
+  .row.centered
+    .ifs_half
       .button#rect_add 
         | {{ transformation ? 'Clone' : 'Add' }}
       .button#rect_up ng-show="transformation" up
@@ -51,12 +55,11 @@
                   | Flip Y
           li
             | Color
-            input type="text" id="color" style="width:80px; display: inline;" value="#000000"
+            input type="text" id="color" style="width:70px; display: inline;" value="#000000"
       /.ifs_preview
         == render 'svg', ifs: @ifs, r: 1, show_coords: true
         #mouse_handler
-    .large-6.medium-6.columns
-      .button#submit_form Submit
+    .ifs_half
       img#fractal_image  style="border-color: black; border-style: dotted;"
       canvas#blackbird_fly width="400" height="400" style="border-color: black; border-style: dotted; display:none"
 - content_for :scripts

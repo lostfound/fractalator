@@ -20,38 +20,38 @@ ul.inline-list
   li = paginate @ifss
 ul.small-block-grid-1.large-block-grid-4.xlarge-block-grid-6.medium-block-grid-3.header
   - @ifss.each do |ifs|
-    li :ul.ifs.pricing-table data-id="#{ifs.id}"
-      li.title 
-        = link_to ifs do 
-          = ifs.name.capitalize
-      li.price style="position: relative"
-        = link_to ifs do#, class: "show-for-small-only" do
-          = image_tag ifs.image_url
-          //img src="#{ifs.image}"
-        .like_field
-          a.like href=""
-            = fa_icon 'thumbs-o-up', class: [:left]
-          strong.score = ifs.score
-          '
-          = fa_icon (ifs.score>=0)?'smile-o':'frown-o', class: :score_currency
-          a.dislike href=""
-            = fa_icon 'thumbs-o-down', class: [:right]
-          - if ifs.user.name
-            = link_to index_iterated_function_systems_path(id: ifs.user_id) do
-              span.label.round = "by #{ifs.user.name}"
-      //= ifs.description
-      li.cta-button
-        = link_to new_iterated_function_system_path(clone: ifs.id), class: %i[button small success] do
-          = fa_icon 'code-fork'
-          | Clone
-        - if ifs.user == current_user
-          = link_to ifs, data: {:confirm => 'Are you sure?'}, :method => :delete,
-                    class: %i[button small alert] do
-            = fa_icon "times"
-            ' Erase
-          = link_to edit_iterated_function_system_path(ifs), class: %i[button small] do
-            = fa_icon 'cutlery'
-            ' Edit
+    - if true
+      li = render 'fractals/preview', ifs: ifs
+    - else
+     li 
+      ul.ifs.pricing-table data-id="#{ifs.id}"
+        li.title 
+            = ifs.name.capitalize
+        li.price style="position: relative"
+          = link_to ifs do#, class: "show-for-small-only" do
+            = image_tag ifs.image_url
+            //img src="#{ifs.image}"
+          .like_field
+            a.like href=""
+              = fa_icon 'thumbs-o-up', class: [:left]
+            strong.score = ifs.score
+            '
+            = fa_icon (ifs.score>=0)?'smile-o':'frown-o', class: :score_currency
+            a.dislike href=""
+              = fa_icon 'thumbs-o-down', class: [:right]
+            - if ifs.user.name
+              = link_to index_iterated_function_systems_path(id: ifs.user_id) do
+                span.label.round = "by #{ifs.user.name}"
+        //= ifs.description
+        li.cta-button
+          = link_to new_iterated_function_system_path(clone: ifs.id), class: %i[icon_button small success] do
+            = fa_icon 'code-fork'
+          - if ifs.user == current_user
+            = link_to ifs, data: {:confirm => 'Are you sure?'}, :method => :delete,
+                      class: %i[icon_button small alert] do
+              = fa_icon "times"
+            = link_to edit_iterated_function_system_path(ifs), class: %i[icon_button small] do
+              = fa_icon 'cutlery'
 = paginate @ifss
 = render 'nav'
 - content_for :scripts

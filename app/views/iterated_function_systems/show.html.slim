@@ -6,11 +6,14 @@
       span.label.round = "by #{@ifs.user.name}"
 
 
-  .medium-6.columns.ifs data-id="#{@ifs.id}"
-    canvas#blackbird_fly width="400" height="400" style="border-color: black; border-style: dotted"
+  .large-6.medium-8.columns.ifs data-id="#{@ifs.id}"
+    div: canvas#blackbird_fly width="400" height="400" style="border-color: black; border-style: dotted"
     = hidden_field_tag :base_shape, @ifs.base_shape
+    div
+      = link_to @ifs.image_url do
+        | Download PNG
 
-  .medium-6.columns
+  .large-6.medium-4.columns
     = label_tag :max_rec do
       | Depth:
     = number_field_tag :depth, @ifs.rec_number, style: "width: 100px;", "ng-model" => 'depth'
