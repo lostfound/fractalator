@@ -12,6 +12,49 @@ class Fractal < ActiveRecord::Base
   has_many :likes, as: :likeable
   #mount_uploader :image, FractalUploader
   mount_base64_uploader :image, FractalUploader
+  
+  def self.list args={}
+    unless args[:user_id]
+      case args[:sort]||'cools'
+      when 'fresh'
+        IteratedFunctionSystem.named.fresh.includes(:user)
+      when 'cools'
+        IteratedFunctionSystem.named.likest.fresh.includes(:user)
+      end
+    else
+      unless args[:me].id == args[:user_id].to_i
+        @owner = User.find args[:user_id]
+        @owner.ifss.named.fresh.includes(:user)
+      else
+        args[:me].ifss.fresh.includes(:user)
+      end
+    end
+  end
+  def next args={}
+    unless args[:user_id]
+      case args[:sort]
+      when 'fresh'
+        self.class.list(args).where('created_at > ?', created_at).last
+      when 'cools'
+        self.class.list(args).where('(created_at > ? and score = ?) or (score > ?)', created_at, score, score).last
+      end
+    else
+      self.class.list(args).where('created_at > ?', created_at).last
+    end
+  end
+  def prev args={}
+    unless args[:user_id]
+      case args[:sort]
+      when 'fresh'
+        self.class.list(args).where('created_at < ?', created_at).first
+      when 'cools'
+        self.class.list(args).where('(created_at < ? and score = ?) or (score < ?)', created_at, score, score).first
+      end
+    else
+      self.class.list(args).where('created_at < ?', created_at).first
+    end
+  end
+
   def fix_image
     i = image.to_s.index 'fractals'
     return if i.nil?

@@ -56,12 +56,35 @@
           li
             | Color
             input type="text" id="color" style="width:70px; display: inline;" value="#000000"
+          li
+            | ...
+            .switch.round
+              input#opts type="checkbox" ng-model="extra_opts"
+              = label_tag :opts do
+                | Opts
+        ul.small-block-grid-5 ng-show="extra_opts"
+          li
+            | Angle
+            input type="number" ng-model="angle"
+          li
+            | Width
+            input type="number" ng-model="width"
+          li
+            | Height
+            input type="number" ng-model="height"
+          li
+            | Left
+            input type="number" ng-model="left"
+          li
+            | Top
+            input type="number" ng-model="top"
       /.ifs_preview
         == render 'svg', ifs: @ifs, r: 1, show_coords: true
         #mouse_handler
     .ifs_half
       img#fractal_image  style="border-color: black; border-style: dotted;"
       canvas#blackbird_fly width="400" height="400" style="border-color: black; border-style: dotted; display:none"
+
 - content_for :scripts
   = stylesheet_link_tag    "iterated_function_systems", "data-turbolinks-track" => true
   = javascript_include_tag "iterated_function_systems", "data-turbolinks-track" => true

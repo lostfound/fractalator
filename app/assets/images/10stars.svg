@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+    <svg height="50" width="50" xmlns="http://www.w3.org/2000/svg" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <defs>
+            <g data-layout="0" data-type="fractal" id="l0rec0">
+                <line class="frdef" stroke="none" x1="0" x2="100" y1="100" y2="100"/>
+                <line class="frline" x1="0" x2="100" y1="100" y2="100"/>
+                <line class="frline" x1="80.90169943749474" x2="0" y1="41.221474770752685" y2="100"/>
+                <line class="frline" x1="100" x2="19.09830056250526" y1="100" y2="41.221474770752685"/>
+                <line class="frline" x1="19.09830056250526" x2="50" y1="41.221474770752685" y2="136.32712640026804"/>
+                <line class="frline" x1="50" x2="80.90169943749474" y1="136.32712640026804" y2="41.221474770752685"/>
+            </g>
+            <g data-layout="0" data-recursion="1" id="l0rec1">
+                <use class="frline" transform="matrix(0.500000,-0.500000,0.500000,0.500000,-50.000000,-0.000000)" xlink:href="#l0rec0"/>
+                <use class="frline" transform="matrix(0.500000,0.500000,-0.500000,0.500000,100.000000,-50.000000)" xlink:href="#l0rec0"/>
+            </g>
+            <g data-layout="0" data-recursion="2" id="fractal0">
+                <use class="frline" transform="matrix(1.000000,0.000000,0.000000,1.000000,0.000000,8.778525)" xlink:href="#l0rec1"/>
+                <use class="frline" transform="matrix(-0.809017,0.587785,-0.587785,-0.809017,110.290962,40.450850)" xlink:href="#l0rec1"/>
+                <use class="frline" transform="matrix(-0.809017,-0.587785,0.587785,-0.809017,70.610737,99.229375)" xlink:href="#l0rec1"/>
+                <use class="frline" transform="matrix(0.309017,0.951057,-0.951057,0.309017,66.651126,-15.450850)" xlink:href="#l0rec1"/>
+                <use class="frline" transform="matrix(0.309017,-0.951057,0.951057,0.309017,2.447174,79.654802)" xlink:href="#l0rec1"/>
+            </g>
+        </defs>
+        <g id="titles">
+            <title data-layout="0" data-name="penta" data-recursion="0">Star</title>
+            <title data-layout="0" data-name="levy" data-recursion="1">Levy</title>
+            <title data-layout="0" data-name="penta" data-recursion="2">Star</title>
+        </g>
+        <g id="main">
+            <circle fill="rgba(255, 255, 255, 0.6)" r="25" cx="25" cy="25"/>
+            <use id="ff0" stroke="black" stroke-width="2" transform="translate(6,10) scale(0.37)" xlink:href="#fractal0"/>
+        </g>
+    </svg>

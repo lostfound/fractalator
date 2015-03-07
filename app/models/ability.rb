@@ -6,6 +6,8 @@ class Ability
     if user.id
       can :read, IteratedFunctionSystem, user_id: user.id, name: ''
       can :read, IteratedFunctionSystem.named
+      can :next, IteratedFunctionSystem.named
+      can :prev, IteratedFunctionSystem.named
       can :create, IteratedFunctionSystem
       can :manage, IteratedFunctionSystem, user_id: user.id
     end

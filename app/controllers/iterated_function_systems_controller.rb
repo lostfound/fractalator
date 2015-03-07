@@ -1,5 +1,5 @@
 class IteratedFunctionSystemsController < ApplicationController
-  before_action :set_iterated_function_system, only: [:show, :edit, :update, :destroy, :like]
+  before_action :set_iterated_function_system, only: %i[next prev show edit update destroy like]
   before_action :create_ifs, only: [:create]
   load_and_authorize_resource except: :like
   PER_PAGE=16
@@ -9,6 +9,7 @@ class IteratedFunctionSystemsController < ApplicationController
   def index
     page = params[:page]
     page||=1
+    uid = nil
     unless params[:id]
       case params[:sort]
       when 'fresh'
@@ -16,25 +17,26 @@ class IteratedFunctionSystemsController < ApplicationController
       when 'cools'
         session[:ifs_sort] = 'cools'
       end
-      if session[:ifs_sort] == 'fresh'
-        @ifss = IteratedFunctionSystem.named.fresh.page(page).per(PER_PAGE)
-      else
-        @ifss = IteratedFunctionSystem.named.likest.fresh.page(page).per(PER_PAGE)
-      end
     else
       uid = params[:id].to_i
-      @owner = User.find uid
-      unless current_user.id == uid
-        @ifss = @owner.ifss.named.fresh.page(page).per(PER_PAGE)
-      else
-        @ifss = @owner.ifss.fresh.page(page).per(PER_PAGE)
-      end
     end
+    @ifss = IteratedFunctionSystem.list( user_id: uid, me: current_user, sort: session[:ifs_sort]||'cools').page(page).per(PER_PAGE) 
+
   end
 
   # GET /iterated_function_systems/1
   # GET /iterated_function_systems/1.json
   def show
+    @iter_args = {uid: params[:uid], sort: params[:sort], id: @ifs.id}
+  end
+
+  def next
+    next_fractal = @ifs.next user_id: params[:uid], me: current_user, sort: params[:sort]
+    redirect_to [next_fractal||@ifs, {uid: params[:uid], sort: params[:sort]}]
+  end
+  def prev
+    prev_fractal = @ifs.prev user_id: params[:uid], me: current_user, sort: params[:sort]
+    redirect_to [prev_fractal||@ifs, {uid: params[:uid], sort: params[:sort]}]
   end
 
   def like

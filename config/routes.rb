@@ -3,7 +3,8 @@ Fractalator::Application.routes.draw do
   #get "omniauth_callbacks/vkontakte"
   resources :iterated_function_systems do
     collection do
-      get :howto
+      get ':id/next' => :next, as: :next
+      get ':id/prev' => :prev, as: :prev
       get 'index/:id' => :index, as: :index
       get ':id/like' => :like, as: :like, defaults: { :format => 'json' }
     end

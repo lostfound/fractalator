@@ -20,9 +20,9 @@
 #= require vendor/modernizr
 #= require foundation
 #= require jquery-hotkeys
-$(document).foundation()
 
 jQuery ->
+  $(document).foundation()
   if $("#main_section").height() < $(window).height()
     $("footer").hide()
   window.modules = {}
@@ -33,3 +33,4 @@ jQuery ->
   ## See https://docs.angularjs.org/guide/bootstrap
   ## http://stackoverflow.com/questions/14797935/using-angularjs-with-turbolinks#answer-15488920
   #angular.bootstrap document, ["fractalator"]
+  #

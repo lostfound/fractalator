@@ -1,17 +1,66 @@
-/*
- * This is a manifest file that'll be compiled into application.css, which will include all the files
- * listed below.
- *
- * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
- * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
- *
- * You're free to add application-wide styles to this file and they'll appear at the top of the
- * compiled file, but it's generally better to create a new file per style scope.
- *
- *= require_self
- * require foundation_and_overrides
+//= require_self
+// require foundation_and_overrides
 @import foundation_and_overrides
 @import font-awesome
+
+.fullscreen
+  cursor: image-url('10stars.svg') 25 25, auto
+.nextprev
+  position: relative
+  height: 2rem
+  display: block
+  width: 400px
+  .next
+    position: absolute
+    bottom: 0
+    left:   0
+  .prev
+    position: absolute
+    bottom: 0
+    right:   0
+.ifs_shower_options
+  input[type=number]
+    max-width: 6.25rem
+  ul
+    max-width: 16rem
+body
+  height: auto !important
+  &.body_blocked
+    width: 100% !important
+    height: 100% !important
+    overflow: hidden !important
+    .layout_blocked
+      display: block
+      position: fixed
+      width: 100%
+      height: 100%
+      top: 0
+      left: 0
+      background: rgba($monsoon, .8)
+      z-index: 1010
+  .layout_blocked
+    display: none
+  .modal_win
+    width: 80%
+    max-width: 55.5rem
+    position: absolute
+    z-index: 1011
+    background: $white
+    padding: 1.666rem
+    border: solid 1px $oil
+    box-shadow: 0 0 10px rgba(0,0,0,0.4)
+    max-height: 80%
+    top: 10%
+    left: 0
+    right: 0
+    margin: auto
+
+
+.gallery
+  margin-left: auto
+  margin-right: auto
+  width: 100%
+  max-width: 85rem
 
 .icon_button
   width: auto
@@ -238,3 +287,4 @@ a.dislike i:hover
 .evo-pop
   border: 1px solid rgba($steel, 1)
   background: white
+

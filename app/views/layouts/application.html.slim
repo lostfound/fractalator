@@ -55,4 +55,7 @@ html lang="en"
       footer
         = yield :navigation
         h1.text-center#fractalator  Fractalator
+    - if content_for? :modal
+       .layout_blocked
+        = yield :modal
         
