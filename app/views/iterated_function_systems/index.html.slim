@@ -21,11 +21,11 @@
     li = paginate @ifss
 /.row
 .gallery
- ul.small-block-grid-1.large-block-grid-4.medium-block-grid-3.header
+ ul.small-block-grid-1.large-block-grid-4.medium-block-grid-3
   - @ifss.each do |ifs|
     - if true
       li = render 'fractals/preview', ifs: ifs
-  = paginate @ifss
+ = paginate @ifss
 - content_for :scripts
   = javascript_include_tag "ifs_index", "data-turbolinks-track" => true
 

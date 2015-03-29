@@ -12,7 +12,7 @@
 #= require evol.colorpicker
 #= require intense
 
-angular.module('ifs',["controllers"])
+angular.module('ifs',["controllers", 'ngRoute', 'ngTurbolinks'])
 controllers = angular.module('controllers',[])
 controllers.controller("ifs_controller", [ '$scope',
   (scope)->

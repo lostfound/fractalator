@@ -1,28 +1,36 @@
+require_relative '../helpers/likeable_model'
 class Fractal < ActiveRecord::Base
 
   belongs_to :user
   belongs_to :parent, class_name: 'Fractal', foreign_key: :parent_id
-  has_many   :childrens, class_name: 'Fractal', foreign_key: :parent_id, dependent: :nullify
+  has_many   :children, class_name: 'Fractal', foreign_key: :parent_id#, dependent: :nullify
+  before_destroy :change_children_parent
   #validates :name,  presence: true, allow_blank: false
+  validates :rec_number, numericality: {greater_than: 0}
+  validates :parent, presence: true, unless: 'parent_id.nil?'
+  validate  :parent_cannot_be_me
+  validate  :name_must_be_ascii_only
   before_validation :strips
   scope :named, -> {where.not name: ''}
   scope :fresh, -> {order "created_at desc"}
   scope :likest, ->{order "score desc"}
 
+  include LikeableModel
   has_many :likes, as: :likeable
   #mount_uploader :image, FractalUploader
   mount_base64_uploader :image, FractalUploader
+
   
   def self.list args={}
     unless args[:user_id]
-      case args[:sort]||'cools'
-      when 'fresh'
+      case (args[:sort]||:cools).to_sym
+      when :fresh
         IteratedFunctionSystem.named.fresh.includes(:user)
-      when 'cools'
+      else
         IteratedFunctionSystem.named.likest.fresh.includes(:user)
       end
     else
-      unless args[:me].id == args[:user_id].to_i
+      if args[:me].nil? or args[:me].id != args[:user_id].to_i
         @owner = User.find args[:user_id]
         @owner.ifss.named.fresh.includes(:user)
       else
@@ -32,10 +40,10 @@ class Fractal < ActiveRecord::Base
   end
   def next args={}
     unless args[:user_id]
-      case args[:sort]
-      when 'fresh'
+      case (args[:sort]||:cools).to_sym
+      when :fresh
         self.class.list(args).where('created_at > ?', created_at).last
-      when 'cools'
+      else
         self.class.list(args).where('(created_at > ? and score = ?) or (score > ?)', created_at, score, score).last
       end
     else
@@ -44,26 +52,16 @@ class Fractal < ActiveRecord::Base
   end
   def prev args={}
     unless args[:user_id]
-      case args[:sort]
-      when 'fresh'
+      case (args[:sort]||'cools').to_sym
+      when :fresh
         self.class.list(args).where('created_at < ?', created_at).first
-      when 'cools'
+      else
         self.class.list(args).where('(created_at < ? and score = ?) or (score < ?)', created_at, score, score).first
       end
     else
       self.class.list(args).where('created_at < ?', created_at).first
     end
   end
-
-  def fix_image
-    i = image.to_s.index 'fractals'
-    return if i.nil?
-    path = 'public/' + image.to_s[i..-1]
-    File.open path, 'rb' do |f|
-      self.update image: f
-    end
-  end
-
 
   def descendents
     self_and_descendents - [self]
@@ -92,6 +90,19 @@ class Fractal < ActiveRecord::Base
   end
 
 private
+  def name_must_be_ascii_only
+    unless name.nil?
+      errors.add(:name, 'must be english word or sentence') unless name.ascii_only?
+    end
+  end
+  def parent_cannot_be_me
+    if not id.nil? and id == parent_id
+      errors.add(:parent, "Can't be parent himself")
+    end
+  end
+  def change_children_parent
+    children.update_all parent_id: parent_id
+  end
   def strips
     self.name.try(:strip!)
   end

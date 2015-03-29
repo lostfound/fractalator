@@ -20,6 +20,7 @@ class IteratedFunctionSystemsController < ApplicationController
     else
       uid = params[:id].to_i
     end
+    @owner = uid.nil? ? nil : User.find(uid)
     @ifss = IteratedFunctionSystem.list( user_id: uid, me: current_user, sort: session[:ifs_sort]||'cools').page(page).per(PER_PAGE) 
 
   end
@@ -41,10 +42,14 @@ class IteratedFunctionSystemsController < ApplicationController
 
   def like
     if user_signed_in?
-      @ifs.likes.create user: current_user, score: (params[:negative])?-1:1 
+      if params[:negative]
+        @ifs.dislike_by current_user
+      else
+        @ifs.like_by current_user
+      end
       respond_to do |format|
         format.json do
-          ret ={id: @ifs.id, score: IteratedFunctionSystem.find(@ifs.id).score}
+          ret ={id: @ifs.id, score: @ifs.score}
           render json: ret.as_json
         end
       end

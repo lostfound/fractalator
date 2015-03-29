@@ -30,7 +30,7 @@ gem 'foundation-rails'
 #gem 'font-icons-rails'#, :git=> 'git://github.com/shorelabs/font-icons-rails.git'
 gem "font-awesome-rails"
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 1.2'
+gem 'jbuilder', '>= 1.2'
 
 gem 'devise'
 gem 'cancan'
@@ -51,6 +51,16 @@ gem 'omniauth-twitter'
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false
+end
+group :test do
+  gem 'capybara'
+  gem 'database_cleaner'
+  gem 'launchy'
+  gem 'selenium-webdriver'
+end
+group :test, :development do
+  gem 'rspec-rails'
+  gem 'factory_girl_rails'
 end
 
 # Use ActiveModel has_secure_password

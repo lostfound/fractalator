@@ -2,16 +2,19 @@
 #= require fabric
 #= require ifs_render
 #= require intense
-angular.module('ifs',["controllers"])
+angular.module('ifs',["controllers", 'ngRoute', 'ngTurbolinks'])
 controllers = angular.module('controllers',[])
 controllers.controller("custom_fractal", [ '$scope',
   (scope)->
   ])
 controllers.controller("ifs_controller", [ '$scope',
   (scope)->
-    scope.timeout = 60
+    localStorage.ifs_animation_timeout||=200
+    localStorage.hr_width||=2000
+
+    scope.timeout = parseInt localStorage.ifs_animation_timeout
     scope.show_transf=false
-    scope.hr_width = 2000
+    scope.hr_width = parseInt localStorage.hr_width
     scope.instanced = false
     scope.make_hr= =>
       $('body').addClass 'body_blocked'
@@ -49,6 +52,10 @@ jQuery ->
   @ifs_scope = $('[ng-controller=ifs_controller]').scope()
   @ifs_eng = new IfsRenderer {scope: @ifs_scope}
   @ifs_eng.render  @ifs_scope.transforms, true
+  @ifs_scope.$watch 'timeout', (n,o)=>
+    localStorage.ifs_animation_timeout = parseInt n
+  @ifs_scope.$watch 'hr_width', (n,o)=>
+    localStorage.hr_width = parseInt n
   @ifs_scope.$watch 'show_transf', (n,o)=>
     @ifs_eng.show_transformations()
   @ifs_scope.$watch 'depth', (n,o)=>
