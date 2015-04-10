@@ -21,8 +21,7 @@ class IteratedFunctionSystemsController < ApplicationController
       uid = params[:id].to_i
     end
     @owner = uid.nil? ? nil : User.find(uid)
-    @ifss = IteratedFunctionSystem.list( user_id: uid, me: current_user, sort: session[:ifs_sort]||'cools').page(page).per(PER_PAGE) 
-
+    @ifss = IteratedFunctionSystem.includes(:user).list( user_id: uid, me: current_user, sort: session[:ifs_sort]||'cools').page(page).per(PER_PAGE) 
   end
 
   # GET /iterated_function_systems/1
