@@ -8,7 +8,7 @@
       li: h2.text-center Gallery
       li: .sub-nav
         dt SORT:
-        - if session[:ifs_sort] == 'fresh'
+        - if session[:sort] == 'fresh'
           dd.active = link_to iterated_function_systems_path(sort: :fresh) do
             | fresh
           dd = link_to iterated_function_systems_path(sort: :cools) do
@@ -18,14 +18,14 @@
             | fresh
           dd.active = link_to iterated_function_systems_path(sort: :cools) do
             | cools
-    li = paginate @ifss
+    li = paginate @fractals
 /.row
 .gallery
  ul.small-block-grid-1.large-block-grid-4.medium-block-grid-3
-  - @ifss.each do |ifs|
+  - @fractals.each do |ifs|
     - if true
       li = render 'fractals/preview', ifs: ifs
- = paginate @ifss
+ = paginate @fractals
 - content_for :scripts
   = javascript_include_tag "ifs_index", "data-turbolinks-track" => true
 

@@ -2,15 +2,15 @@
 - IteratedFunctionSystem::SHAPES.each_with_index {|n,i| shapes<<{id: i, name: n}}
 
 #ifs_editor ng-app="ifs" ng-controller="ifs_controller" ng-init="shapes=#{shapes.to_json}"
-  = form_for @ifs, html: {id: :ifs_form} do |f|
+  = form_for @fractal, html: {id: :ifs_form} do |f|
     .row
-      .medium-2.small-4.column ng-init="base_shape=#{@ifs.base_shape}"
+      .medium-2.small-4.column ng-init="base_shape=#{@fractal.base_shape}"
         = f.label :base_shape
         select#iterated_function_system_base_shape ng-model="base_shape" ng-options="shape.id as shape.name for shape in shapes" name="iterated_function_system[base_shape]"
       .medium-2.small-4.columns
         = f.label :name
         = f.text_field :name
-      .medium-2.small-4.columns ng-init="depth=#{@ifs.rec_number}"
+      .medium-2.small-4.columns ng-init="depth=#{@fractal.rec_number}"
         = f.label :depth
         = f.number_field :rec_number, 'ng-model' => 'depth' 
       .medium-4.small-8.columns
@@ -24,11 +24,11 @@
       = f.hidden_field :parent_id
     .row
       .small-9.columns
-        - if @ifs.errors.any?
+        - if @fractal.errors.any?
           .alert-box.alert.radius
-            h3 = "#{pluralize(@ifs.errors.count, "error")} prohibited this IFS from being saved:"
+            h3 = "#{pluralize(@fractal.errors.count, "error")} prohibited this IFS from being saved:"
             ul
-              - @ifs.errors.full_messages.each do |message|
+              - @fractal.errors.full_messages.each do |message|
                 li = message
       
   .row.centered
@@ -79,7 +79,7 @@
             | Top
             input type="number" ng-model="top"
       /.ifs_preview
-        == render 'svg', ifs: @ifs, r: 1, show_coords: true
+        == render 'svg', ifs: @fractal, r: 1, show_coords: true
         #mouse_handler
     .ifs_half
       img#fractal_image  style="border-color: black; border-style: dotted;"

@@ -7,7 +7,7 @@
     - if params.has_key? :id
       - args[:uid]=params[:id] 
     - else
-      - args[:sort]=session[:ifs_sort]
+      - args[:sort]=session[:sort]
     = link_to [ifs, args] do#, class: "show-for-small-only" do
       = image_tag ifs.image_url
     = link_to new_iterated_function_system_path(clone: ifs.id), class: %i[icon_button success fork] do

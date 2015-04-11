@@ -33,7 +33,7 @@ gem "font-awesome-rails"
 gem 'jbuilder', '>= 1.2'
 
 gem 'devise'
-gem 'cancan'
+gem 'cancancan'
 gem 'jquery-ui-rails'
 gem 'angularjs-rails'
 

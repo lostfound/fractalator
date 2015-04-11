@@ -19,7 +19,6 @@ require 'rails_helper'
 # that an instance is receiving a specific message.
 
 RSpec.describe IteratedFunctionSystemsController, type: :controller do
-  login
 
   # This should return the minimal set of attributes required to create a valid
   # IteratedFunctionSystem. As you add validations to IteratedFunctionSystem, be sure to
@@ -39,124 +38,243 @@ RSpec.describe IteratedFunctionSystemsController, type: :controller do
   # IteratedFunctionSystemsController. Be sure to keep this updated too.
   let(:valid_session) { {} }
 
-  describe "GET #index" do
-    it "assigns all iterated_function_systems as @ifss" do
-      iterated_function_system = create :ifs, user: @user
-      get :index, {}, valid_session
-      expect(assigns(:ifss)).to eq([iterated_function_system])
+  describe "User is logged in" do
+    login
+    describe "GET #index" do
+      it "assigns all iterated_function_systems as @fractals" do
+        iterated_function_system = create :ifs, user: @user
+        get :index, {}, valid_session
+        expect(assigns(:fractals)).to eq([iterated_function_system])
+      end
+      it "assigns all ''named'' iterated_function_systems as @fractals" do
+        create :ifs, name: '', user: @user
+        iterated_function_system = create :ifs, user: @user
+        get :index, {}, valid_session
+        expect(assigns(:fractals)).to eq([iterated_function_system])
+      end
     end
-  end
-
-  describe "GET #show" do
-    it "assigns the requested iterated_function_system as @ifs" do
-      iterated_function_system = create :ifs
-      get :show, {:id => iterated_function_system.to_param}, valid_session
-      expect(assigns(:ifs)).to eq(iterated_function_system)
+    describe "GET #index/:user_id" do
+      before(:each) do
+        @my_fractals = []
+        @my_fractals<<create(:ifs, user: @user)
+        @my_fractals.unshift create(:ifs, user: @user, name: '')
+        @somebody = create :user
+        @smb_fractals=[]
+        @smb_fractals<<create(:ifs, user: @somebody)
+        create(:ifs, user: @somebody, name: '')
+      end
+      it "assigns all itself fractals as @fractals" do
+        get :index, {id: @user.id}, valid_session
+        expect(assigns(:fractals)).to eq(@my_fractals)
+      end
+      it "assigns smb. else's named fractals as @fractals" do
+        get :index, {id: @somebody.id}, valid_session
+        expect(assigns(:fractals)).to eq(@smb_fractals)
+      end
     end
-  end
 
-  describe "GET #new" do
-    it "assigns a new iterated_function_system as @ifs" do
-      get :new, {}, valid_session
-      expect(assigns(:ifs)).to be_a_new(IteratedFunctionSystem)
+    describe "GET #show" do
+      it "assigns the requested iterated_function_system as @fractal" do
+        iterated_function_system = create :ifs
+        get :show, {:id => iterated_function_system.to_param}, valid_session
+        expect(assigns(:fractal)).to eq(iterated_function_system)
+      end
+      it "redirects to previous page if requested fractal has other owner and has not the name" do
+        @somebody = create :user
+        fractal = create :ifs, user: @somebody, name: ''
+        reffer= "/god_is_dog"
+        @request.env['HTTP_REFERER'] = reffer.clone
+        #reffer = @request.host.to_s + '/' + reffer
+        get :show, {:id => fractal.to_param}, valid_session
+        expect(response).to redirect_to(reffer)
+      end
     end
-  end
 
-  describe "GET #edit" do
-    it "assigns the requested iterated_function_system as @iterated_function_system" do
-      iterated_function_system = create :ifs, user: @user
-      get :edit, {:id => iterated_function_system.to_param}, valid_session
-      expect(assigns(:iterated_function_system)).to eq(iterated_function_system)
+    describe "GET #new" do
+      it "assigns a new iterated_function_system as @fractal" do
+        get :new, {}, valid_session
+        expect(assigns(:fractal)).to be_a_new(IteratedFunctionSystem)
+      end
+      it "redirects to previous page if cloned fractal has other owner and has not the name" do
+        @somebody = create :user
+        fractal = create :ifs, user: @somebody, name: ''
+        reffer= "/god_is_dog"
+        @request.env['HTTP_REFERER'] = reffer.clone
+        get :new, {:clone => fractal.to_param}, valid_session
+        expect(response).to redirect_to(reffer)
+      end
     end
-  end
 
-  describe "POST #create" do
-    context "with valid params" do
-      it "creates a new IteratedFunctionSystem" do
-        expect {
+    describe "GET #edit" do
+      it "assigns the requested iterated_function_system as @fractal" do
+        iterated_function_system = create :ifs, user: @user
+        get :edit, {:id => iterated_function_system.to_param}, valid_session
+        expect(assigns(:fractal)).to eq(iterated_function_system)
+      end
+      it "redirects to previous page if requested fractal has other owner" do
+        @somebody = create :user
+        fractal = create :ifs, user: @somebody, name: ''
+        reffer= "/god_is_dog"
+        @request.env['HTTP_REFERER'] = reffer.clone
+        #reffer = @request.host.to_s + '/' + reffer
+        get :edit, {id: fractal.to_param}, valid_session
+        expect(response).to redirect_to(reffer)
+      end
+    end
+
+    describe "POST #create" do
+      #VALID
+      context "with valid params" do
+        it "creates a new IteratedFunctionSystem" do
+          expect {
+            post :create, {:iterated_function_system => valid_attributes}, valid_session
+          }.to change(IteratedFunctionSystem, :count).by(1)
+        end
+
+        it "assigns a newly created iterated_function_system as @fractal" do
+          post :create, {iterated_function_system: valid_attributes}, valid_session
+          expect(assigns(:fractal)).to be_a(IteratedFunctionSystem)
+          expect(assigns(:fractal)).to be_persisted
+        end
+
+        it "redirects to the created iterated_function_system" do
           post :create, {:iterated_function_system => valid_attributes}, valid_session
-        }.to change(IteratedFunctionSystem, :count).by(1)
+          expect(response).to redirect_to(IteratedFunctionSystem.last)
+        end
       end
 
-      it "assigns a newly created iterated_function_system as @iterated_function_system" do
-        post :create, {:iterated_function_system => valid_attributes}, valid_session
-        expect(assigns(:iterated_function_system)).to be_a(IteratedFunctionSystem)
-        expect(assigns(:iterated_function_system)).to be_persisted
-      end
+      #INVALID
+      context "with invalid params" do
+        it "assigns a newly created but unsaved iterated_function_system as @fractal" do
+          post :create, {:iterated_function_system => invalid_attributes}, valid_session
+          expect(assigns(:fractal)).to be_a_new(IteratedFunctionSystem)
+        end
 
-      it "redirects to the created iterated_function_system" do
-        post :create, {:iterated_function_system => valid_attributes}, valid_session
-        expect(response).to redirect_to(IteratedFunctionSystem.last)
-      end
-    end
-
-    context "with invalid params" do
-      it "assigns a newly created but unsaved iterated_function_system as @iterated_function_system" do
-        post :create, {:iterated_function_system => invalid_attributes}, valid_session
-        expect(assigns(:iterated_function_system)).to be_a_new(IteratedFunctionSystem)
-      end
-
-      it "re-renders the 'new' template" do
-        post :create, {:iterated_function_system => invalid_attributes}, valid_session
-        expect(response).to render_template("new")
-      end
-    end
-  end
-
-  describe "PUT #update" do
-    before(:each) { @ifs =  create :ifs, user: @user  }
-    context "with valid params" do
-      let(:new_attributes) {
-        {name: "Holocoust"}
-      }
-
-      it "updates the requested iterated_function_system" do
-        put :update, {id: @ifs.to_param, iterated_function_system: new_attributes}, valid_session
-        @ifs.reload
-        skip("Add assertions for updated state")
-      end
-
-      it "assigns the requested iterated_function_system as @iterated_function_system" do
-        put :update, {id: @ifs.to_param, :iterated_function_system => valid_attributes}, valid_session
-        expect(assigns(:iterated_function_system)).to eq(@ifs)
-      end
-
-      it "redirects to the iterated_function_system" do
-        @ifs
-        put :update, {:id => @ifs.to_param, :iterated_function_system => valid_attributes}, valid_session
-        expect(response).to redirect_to(@ifs)
+        it "re-renders the 'new' template" do
+          post :create, {:iterated_function_system => invalid_attributes}, valid_session
+          expect(response).to render_template("new")
+        end
       end
     end
 
-    context "with invalid params" do
-      it "assigns the iterated_function_system as @iterated_function_system" do
-        put :update, {id: @ifs.to_param, :iterated_function_system => invalid_attributes}, valid_session
-        expect(assigns(:iterated_function_system)).to eq(@ifs)
+    describe "PUT #update" do
+      before(:each) { @ifs =  create :ifs, user: @user  }
+      context "with valid params" do
+        let(:new_attributes) {
+          {name: "Holocoust"}
+        }
+
+        it "updates the requested iterated_function_system" do
+          put :update, {id: @ifs.to_param, iterated_function_system: new_attributes}, valid_session
+          @ifs.reload
+          expect(@ifs.name).to eq(new_attributes[:name])
+        end
+
+        it "assigns the requested iterated_function_system as @iterated_function_system" do
+          put :update, {id: @ifs.to_param, :iterated_function_system => valid_attributes}, valid_session
+          expect(assigns(:fractal)).to eq(@ifs)
+        end
+
+        it "redirects to the iterated_function_system" do
+          @ifs
+          put :update, {:id => @ifs.to_param, :iterated_function_system => valid_attributes}, valid_session
+          expect(response).to redirect_to(@ifs)
+        end
+        it "redirects to previous page if requested fractal has other owner" do
+          @somebody = create :user
+          fractal = create :ifs, user: @somebody, name: ''
+          reffer= "/god_is_dog"
+          @request.env['HTTP_REFERER'] = reffer.clone
+          put :update, {id: fractal.to_param, iterated_function_system: valid_attributes}, valid_session
+          expect(response).to redirect_to(reffer)
+        end
       end
 
-      it "re-renders the 'edit' template" do
-        put :update, {:id => @ifs.to_param, :iterated_function_system => invalid_attributes}, valid_session
-        expect(response).to render_template("edit")
+      context "with invalid params" do
+        it "assigns the iterated_function_system as @iterated_function_system" do
+          put :update, {id: @ifs.to_param, :iterated_function_system => invalid_attributes}, valid_session
+          expect(assigns(:fractal)).to eq(@ifs)
+        end
+
+        it "re-renders the 'edit' template" do
+          put :update, {:id => @ifs.to_param, :iterated_function_system => invalid_attributes}, valid_session
+          expect(response).to render_template("edit")
+        end
       end
     end
-  end
 
-  describe "DELETE #destroy" do
-    before(:each) do
-      @ifs =  create :ifs, user: @user
-      @not_my_ifs = create :ifs, user: create(:user)
-      @request.env['HTTP_REFERER'] = "/iterated_function_systems"
-    end
-    it "destroys the requested iterated_function_system" do
-      expect {
+    describe "DELETE #destroy" do
+      before(:each) do
+        @ifs =  create :ifs, user: @user
+        @not_my_ifs = create :ifs, user: create(:user)
+        @request.env['HTTP_REFERER'] = "/iterated_function_systems"
+      end
+      it "destroys the requested iterated_function_system" do
+        expect {
+          delete :destroy, {id: @ifs.to_param}, valid_session
+        }.to change(IteratedFunctionSystem, :count).by(-1)
+      end
+
+      it "redirects to the iterated_function_systems list" do
         delete :destroy, {id: @ifs.to_param}, valid_session
-      }.to change(IteratedFunctionSystem, :count).by(-1)
+        expect(response).to redirect_to(iterated_function_systems_url)
+      end
+    end
+  end
+
+  #Is not Logged in
+  describe "User is not logged in" do
+    describe "GET #index" do
+      it "redirects to login page" do
+        iterated_function_system = create :ifs, user: @user
+        get :index, {}, valid_session
+        expect(response).to redirect_to("/")
+      end
     end
 
-    it "redirects to the iterated_function_systems list" do
-      delete :destroy, {id: @ifs.to_param}, valid_session
-      expect(response).to redirect_to(iterated_function_systems_url)
+    describe "GET #show" do
+      it "redirects to login page" do
+        iterated_function_system = create :ifs
+        get :show, {:id => iterated_function_system.to_param}, valid_session
+        expect(response).to redirect_to("/")
+      end
     end
+
+    describe "GET #new" do
+      it "redirects to login page" do
+        get :new, {}, valid_session
+        expect(response).to redirect_to("/")
+      end
+    end
+
+    describe "GET #edit" do
+      it "redirects to login page" do
+        iterated_function_system = create :ifs, user: @user
+        get :edit, {:id => iterated_function_system.to_param}, valid_session
+        expect(response).to redirect_to("/")
+      end
+    end
+    describe "POST #create" do
+      it "redirects to login page" do
+        post :create, {:iterated_function_system => valid_attributes}, valid_session
+        expect(response).to redirect_to("/")
+      end
+    end
+    describe "PUT #update" do
+      before(:each) { @ifs =  create :ifs, user: create(:user) }
+      it "redirects to login page" do
+        put :update, {id: @ifs.to_param, :iterated_function_system => valid_attributes}, valid_session
+        expect(response).to redirect_to("/")
+      end
+    end
+    describe "DELETE #destroy" do
+      before(:each) { @ifs =  create :ifs, user: create(:user) }
+      it "redirects to login page" do
+        delete :destroy, {id: @ifs.to_param}, valid_session
+        expect(response).to redirect_to("/")
+      end
+    end
+
   end
 
 end

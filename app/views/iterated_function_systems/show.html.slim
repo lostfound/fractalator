@@ -1,27 +1,27 @@
-.row ng-app="ifs" ng-controller="ifs_controller" ng-init="transforms=#{@ifs.transforms}; depth=#{@ifs.rec_number}; base_shape=#{@ifs.base_shape}"
+.row ng-app="ifs" ng-controller="ifs_controller" ng-init="transforms=#{@fractal.transforms}; depth=#{@fractal.rec_number}; base_shape=#{@fractal.base_shape}"
   p#notice = notice
   h2
-    = @ifs.name.to_s.capitalize
-    - if @ifs.user.name
-      span.label.round = "by #{@ifs.user.name}"
+    = @fractal.name.to_s.capitalize
+    - if @fractal.user.name
+      span.label.round = "by #{@fractal.user.name}"
 
 
-  .large-6.medium-8.columns.ifs data-id="#{@ifs.id}"
+  .large-6.medium-8.columns.ifs data-id="#{@fractal.id}"
     .nextprev
       = link_to next_iterated_function_systems_path(@iter_args), class: :next do
         | <-- next
       = link_to prev_iterated_function_systems_path(@iter_args), class: :prev do
         | prev -->
     div: canvas#blackbird_fly width="400" height="400" style="border-color: black; border-style: dotted"
-    = hidden_field_tag :base_shape, @ifs.base_shape
+    = hidden_field_tag :base_shape, @fractal.base_shape
     div
-      = link_to @ifs.image_url do
+      = link_to @fractal.image_url do
         | Download PNG
 
   .large-6.medium-4.columns.ifs_shower_options
     = label_tag :max_rec do
       | Depth:
-    = number_field_tag :depth, @ifs.rec_number, "ng-model" => 'depth'
+    = number_field_tag :depth, @fractal.rec_number, "ng-model" => 'depth'
     = label_tag :timeout do
       | Timeout (ms)
     = number_field_tag :timeout, nil, 'ng-model' => 'timeout'
@@ -39,15 +39,15 @@
         | Width
         input type="number" ng-model="hr_width"
     .button ng-click="make_hr()" Make
-    /- unless @ifs.description.empty?
+    /- unless @fractal.description.empty?
       .panel
-        = markdown(@ifs.description).html_safe
-    .likes.ifs data-id="#{@ifs.id}"
+        = markdown(@fractal.description).html_safe
+    .likes.ifs data-id="#{@fractal.id}"
       a.like href=""
         = fa_icon 'thumbs-o-up', class: [:left]
-      strong.score = @ifs.score
+      strong.score = @fractal.score
       '
-      = fa_icon (@ifs.score>=0)?'smile-o':'frown-o', class: :score_currency
+      = fa_icon (@fractal.score>=0)?'smile-o':'frown-o', class: :score_currency
       '
       a.dislike href=""
         = fa_icon 'thumbs-o-down'
