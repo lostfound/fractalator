@@ -9,6 +9,8 @@ html lang="en"
     link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:400,700' rel='stylesheet' type='text/css'
     = stylesheet_link_tag    "application", "data-turbolinks-track" => true
     = javascript_include_tag "application", "data-turbolinks-track" => true
+    - if fractal = Fractal.likest.fresh.first
+      = favicon_link_tag fractal.image_url
     - if content_for? :scripts
       = yield :scripts
 
@@ -16,15 +18,28 @@ html lang="en"
 
     - content_for :navigation
       - if user_signed_in?
-        ul.medium-block-grid-7.large-block-grid-7.header
-          li = link_to :back, class: :item do
-            label Back
-          li = link_to iterated_function_systems_path, class: :item do
-            | Named Fractals
-          li = link_to index_iterated_function_systems_path(id: current_user), class: :item do
-            | My Fractals
-          li = link_to new_iterated_function_system_path, class: :item do
-            | New Fractal
+        ul.medium-block-grid-4.large-block-grid-7.header
+          li.show-for-large-up
+          li
+            = link_to fractals_path, class: :item do
+              | Named Fractals
+            ul
+              li = link_to 'IFS', iterated_function_systems_path, class: :item
+              li = link_to 'IFS chains', ifs_chains_path, class: :item
+
+          li 
+            = link_to index_fractals_path(id: current_user), class: :item do
+              | My Fractals
+            ul
+              li = link_to 'IFS', index_iterated_function_systems_path(id: current_user), class: :item
+              li = link_to 'IFS chains', index_ifs_chains_path(id: current_user), class: :item
+          li
+            span style="color: gray" Create your own Fractal
+            ul 
+              li = link_to new_iterated_function_system_path, class: :item do
+                | IFS Fractal
+              li = link_to new_ifs_chain_path, class: :item do
+                | IFS chain
           - if @ifs and @ifs.id
             - if action_name != 'edit' and can? :edit, @ifs
               li = link_to edit_iterated_function_system_path(@ifs), class: :item do
@@ -36,7 +51,7 @@ html lang="en"
                 label Show
 
           = link_to  destroy_user_session_path, method: :delete, class: :item do
-            | Exit
+            | Logout
   body
     - unless user_signed_in?
       nav.top-bar class="[medium large content]"

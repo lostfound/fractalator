@@ -1,4 +1,10 @@
 class IteratedFunctionSystemsController < FractalsController
+  def index
+    super
+    if params[:layout]=='chain'
+      render 'index_chain', layout: false
+    end
+  end
   private
     def user_fractals user=nil
       u=user||current_user

@@ -23,62 +23,13 @@ class Queue
   push: (args, task)->
     @tasks.push({id: args, run: task})
 
-window.ifs_properties = ['width', 'height', 'left', 'top', 'scaleX', 'scaleY', 'angle', 'flipX', 'flipY', 'x', 'y', 'color', 'originX', 'originY', 'image_filters']
+window.ifs_properties = ['width', 'height', 'left', 'top', 'scaleX', 'scaleY', 'angle', 'flipX', 'flipY', 'x', 'y', 'color', 'originX', 'originY']
 
 window.fobj_to_hash= (rect)->
   hash = {}
   for prop in ifs_properties
     hash[prop] = rect[prop]
   hash
-init_filters= ->
-
-  window.image_filters={}
-  for fltr in ['Grayscale', 'Invert', 'Sepia', 'Sepia2']
-    do (fltr)=>
-      window.image_filters[fltr]=
-        name: fltr
-        run:  ->
-          new fabric.Image.filters[fltr]()
-  window.image_filters['Remove White']=
-    name: fltr
-    run: ->
-      new fabric.Image.filters['RemoveWhite']
-
-  window.image_filters['Blur']=
-    name: fltr
-    run: ->
-      new fabric.Image.filters.Convolute(
-        matrix: [ 1/9, 1/9, 1/9,  1/9, 1/9, 1/9,  1/9, 1/9, 1/9,])
-  window.image_filters['Emboss']=
-    name: fltr
-    run: ->
-      new fabric.Image.filters.Convolute(
-        matrix: [ 1, 1, 1, 1, 0.7, -1, -1,  -1, -1 ]
-        )
-                       
-  window.image_filters['Brightness']=
-    name: fltr
-    params:
-      brightness:
-        name: 'brightness(0...255)'
-        v: 60
-        type: 'number'
-        min: 0
-        max: 255
-    run: (obj)->
-      new fabric.Image.filters.Brightness brightness: obj.params.brightness.v
-  window.image_filters['Pixelate']=
-    name: fltr
-    params:
-      blocksize:
-        name: 'block size(px)'
-        v: 4
-        type: 'number'
-        min: 0
-        max: 300
-    run: (obj)->
-      new fabric.Image.filters.Pixelate blocksize: obj.params.blocksize.v
-init_filters()
 
 class IfsRenderer
   #Example:
@@ -104,7 +55,6 @@ class IfsRenderer
     @canvas_id   = args.canvas_id||'blackbird_fly'
     @jcanvas     = $("##{@canvas_id}")
     @on_completed = args.on_completed
-      
     if args.progress
       @progress = $(args.progress)
 
@@ -153,8 +103,26 @@ class IfsRenderer
         @hide_tranforms()
       on_done()
 
-  render: (rects, redraw)->
-    @queue.clear() if redraw
+  render: (pipeline, redraw)->
+    @queue.clear() #if redraw
+    @rec=0 #if redraw
+    i=0
+    while i<@max_rec()
+      for fractal in pipeline
+        return unless i<@max_rec()
+        do (fractal)=>
+          @queue.push ['t', 0 + @revision ], (on_done)=>
+            @set_transforms(fractal.transforms)
+            on_done()
+          for j in [0...fractal.repeats]
+            @queue.push 'h', (on_done)=>
+              @heraks(on_done)
+            i += 1
+            return unless i<@max_rec()
+      return if i == 0
+    return
+        
+      
     @queue.push ['t', 0 + @revision ], (on_done)=>
       @rec=0 if redraw
       @set_transforms(rects)
@@ -181,14 +149,14 @@ class IfsRenderer
     if @scope.depth != undefined
       @scope.depth
     else
-      parseInt $('#iterated_function_system_rec_number').val()
+      parseInt $('#ifs_chain_rec_number').val()
 
   shape_id: ->
     if @scope.base_shape != undefined
       @scope.base_shape
     else
-      shape_no = $('#iterated_function_system_base_shape').val()
-      parseInt  $('#iterated_function_system_base_shape').val()
+      shape_no = $('#ifs_chain_base_shape').val()
+      parseInt   $('#ifs_chain_base_shape').val()
   baseshape: ->
       @baseshapes[ @shape_id() ]
 
@@ -197,6 +165,12 @@ class IfsRenderer
   #  for prop in @properties
   #    hash[prop] = rect[prop]
   #  hash
+
+  create_image: (img, cb)=>
+     new Promise (fulfil, reject) =>
+      fabric.Image.fromURL img, (oimg)=>
+        fulfil(oimg)
+
   first_image: (color, sid)->
     @colors[sid]||={}
     if img = @colors[sid][color]
@@ -219,16 +193,6 @@ class IfsRenderer
       transf.bringToFront()
     @z.renderAll()
     
-  # Promizes
-  create_image: (img, cb)=>
-     new Promise (fulfil, reject) =>
-      fabric.Image.fromURL img, (oimg)=>
-        fulfil(oimg)
-  apply_filter: (oimg, cb)=>
-     new Promise (fulfil, reject) =>
-      oimg.applyFilters =>
-        fulfil(oimg)
-
   heraks: (on_done)->
     @hide_tranforms()
     simgs=[]
@@ -236,7 +200,7 @@ class IfsRenderer
       for image in @images
         image.remove()
       @images=[]
-      @rendered_revision = @revision
+      @rendered_revision = 0+ @revision
       @colors = {}
       sid = @shape_id()
       for rect in @rects
@@ -260,43 +224,35 @@ class IfsRenderer
       for image in @images
         image.remove()
       @images=[]
-      ofiltered_objects = []
       for i in [0...fabric_images.length]
         rect = @rects[i]
         continue unless rect
         oimg = fabric_images[i]
         oimg.set rect
-        if rect.image_filters and rect.image_filters.length > 0
-          for imf in rect.image_filters
-            oimg.filters.push( window.image_filters[imf.name].run(imf) )
-          ofiltered_objects.push oimg
-        @images.push oimg
         @z.add oimg
-      @z.renderAll()
-      Promise.all(ofiltered_objects.map @apply_filter).then (filtered_images)=>
-        for oimg in @images
-          @z.renderAll()
-        if @rec < @max_rec()
-          if @progress
-            pp = 100.0*@rec/@max_rec()
-            @progress.css {width: "#{pp}%"}
+        @images.push oimg
+        @z.renderAll()
+      if @rec < @max_rec()
+        if @progress
+          pp = 100.0*@rec/@max_rec()
+          @progress.css {width: "#{pp}%"}
+      else
+        @progress.css {width: "100%"} if @progress
+        if @dest_image
+          $(@dest_image).attr 'src', @jcanvas[0].toDataURL("image/png")
+        if @dest_input
+          $(@dest_input).val @jcanvas[0].toDataURL("image/png")
+        @rec=0
+        @z.renderAll()
+        @strip_queue()
+      if @scope.show_transf
+        @show_transf()
+      if @rec == 0 and @on_completed
+        @on_completed()
+      if on_done
+        if @scope.timeout
+          setTimeout (=> on_done()), parseInt @scope.timeout
         else
-          @progress.css {width: "100%"} if @progress
-          if @dest_image
-            $(@dest_image).attr 'src', @jcanvas[0].toDataURL("image/png")
-          if @dest_input
-            $(@dest_input).val @jcanvas[0].toDataURL("image/png")
-          @rec=0
-          @z.renderAll()
-          @strip_queue()
-        if @scope.show_transf
-          @show_transf()
-        if @rec == 0 and @on_completed
-          @on_completed()
-        if on_done
-          if @scope.timeout
-            setTimeout (=> on_done()), parseInt @scope.timeout
-          else
-            on_done()
+          on_done()
 window.IfsRenderer = IfsRenderer
 

@@ -1,4 +1,3 @@
-require_relative '../helpers/likeable_model'
 class Fractal < ActiveRecord::Base
 
   belongs_to :user
@@ -13,28 +12,33 @@ class Fractal < ActiveRecord::Base
   before_validation :strips
   scope :named, -> {where.not name: ''}
   scope :fresh, -> {order "created_at desc"}
-  scope :likest, ->{order "score desc"}
 
-  include LikeableModel
-  has_many :likes, as: :likeable
+  include Likeable
   #mount_uploader :image, FractalUploader
   mount_base64_uploader :image, FractalUploader
 
   
+  def self.typed
+    if name != 'Fractal'
+      where(type: name)
+    else
+      all
+    end
+  end
   def self.list args={}
     unless args[:user_id]
       case (args[:sort]||:cools).to_sym
       when :fresh
-        IteratedFunctionSystem.named.fresh.includes(:user)
+        Fractal.typed.named.fresh.includes(:user)
       else
-        IteratedFunctionSystem.named.likest.fresh.includes(:user)
+        Fractal.typed.named.likest.fresh.includes(:user)
       end
     else
       if args[:me].nil? or args[:me].id != args[:user_id].to_i
         @owner = User.find args[:user_id]
-        @owner.ifss.named.fresh.includes(:user)
+        @owner.fractals.typed.named.fresh.includes(:user)
       else
-        args[:me].ifss.fresh.includes(:user)
+        args[:me].fractals.typed.fresh.includes(:user)
       end
     end
   end
@@ -63,6 +67,9 @@ class Fractal < ActiveRecord::Base
     end
   end
 
+  def all_children
+    self.class.tree_for(self).where.not(name: '') - [self]
+  end
   def descendents
     self_and_descendents - [self]
   end
@@ -71,8 +78,20 @@ class Fractal < ActiveRecord::Base
     self.class.tree_for(self)
   end
 
-  def self.tree_for(instance)
-    where("#{table_name}.id IN (#{tree(instance)})").order("#{table_name}.id")
+  def self.tree_for(instance, reversed=false)
+    if reversed
+      where("#{table_name}.id IN (#{tree_rev(instance)})").order("#{table_name}.id")
+    else
+      where("#{table_name}.id IN (#{tree(instance)})").order("#{table_name}.id")
+    end
+  end
+
+  def parents
+    self.class.tree_for(self, true)
+  end
+
+  def grandparent
+    parents.where(parent_id: nil).first
   end
 
   def self.tree(instance)
@@ -83,6 +102,19 @@ class Fractal < ActiveRecord::Base
           UNION
           SELECT id FROM fractals, tree
            WHERE fractals.parent_id = tree.n
+        )
+      SELECT id FROM fractals
+       WHERE fractals.id IN tree
+    SQL
+  end
+  def self.tree_rev(instance)
+    tree_sql =  <<-SQL
+      WITH RECURSIVE
+        tree(n) AS (
+          VALUES(#{instance.parent_id||-1})
+          UNION
+          SELECT parent_id FROM fractals, tree
+           WHERE fractals.id = tree.n
         )
       SELECT id FROM fractals
        WHERE fractals.id IN tree

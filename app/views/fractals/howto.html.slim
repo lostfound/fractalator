@@ -1,0 +1,70 @@
+== render 'nav'
+.row
+  .large-1.column
+  .large-12.columns
+    h2 Geometry of Plane Transformations
+    p To generate all but the simplest fractals, we need to understand the geometry of plane transformations. Here we describe and illustrate the four features of plane transformations, and show how they are encoded in our software.
+    p
+      ' Affine transformations of the plane are composed of 
+      a href="#scalings"
+        span.label.success scalings
+      ',
+      a href="#reflections"
+        span.label.success reflections
+      ', 
+      a href="#rotations"
+        span.label.success rotations
+      ', and 
+      a href="#translations"
+        span.label.success translations
+      '.
+
+    .div.panel.hide#scalings
+      p The scaling factor in the x-direction is denoted r.
+      p The scaling factor in the y-direction is denoted s.
+      p Assume there are no rotations. Then if r = s, the transformation is a similarity
+      = image_tag "scale1.gif"
+      = image_tag "scale2.gif"
+      p otherwise it is an affinity
+      = image_tag "scale1.gif"
+      = image_tag "scale3.gif"
+      p Note the scalings are always toward the origin. That is, the origin is the fixed point of all scalings.
+    .div.panel.hide#reflections
+      p Negative r reflects across the y-axis.
+      = image_tag "refl1.gif"
+      = image_tag "refl2.gif"
+      p Negative s reflects across the x-axis.
+      = image_tag "refl1.gif"
+      = image_tag "refl3.gif"
+      p Reflection across both the x- and y-axes is equivalent to rotation by 180° about the origin.
+    .div.panel.hide#rotations
+      p The angle θ measures rotations of horizontal lines
+      = image_tag "rot1.gif"
+      = image_tag "rot2.gif"
+      p The angle φ measures rotations of vertical lines
+      = image_tag "rot1.gif"
+      = image_tag "rot3.gif"
+      p The condition θ = φ gives a rigid rotation about the origin. Positive angles are counterclockwise.
+      = image_tag "rot1.gif"
+      = image_tag "rot4.gif"
+    .div.panel.hide#translations
+      p Horizontal translation is measured by X.
+      p Vertical translation is measured by y.
+        
+
+    p 
+      ' The order of these transformations is important.
+      //'For 
+      //span.label.success example
+      //', reflecting then translating can give a different result from translating then reflecting.
+    p
+      'We adopt this convention:
+      ul
+        li scalings first, reflections second, rotations third, and translations last.
+      
+        li This order is imposed by the matrix formulation.
+        li Emphasizing this order, the components of a transformation are encoded in tables of this form
+    p With this encoding of transformations of the plane, we can make fractals using the method called Iterated Function Systems (IFS).
+
+- content_for :scripts
+  = javascript_include_tag "ifs_howto", "data-turbolinks-track" => true

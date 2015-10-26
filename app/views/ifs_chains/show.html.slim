@@ -1,4 +1,4 @@
-.row ng-app="ifs" ng-controller="ifs_controller" ng-init="transforms=#{@fractal.transforms}; depth=#{@fractal.rec_number}; base_shape=#{@fractal.base_shape}"
+.row ng-app="ifs" ng-controller="ifs_controller" ng-init="pipeline=#{@fractal.pipeline.to_json}; depth=#{@fractal.rec_number}; base_shape=#{@fractal.base_shape}"
   p#notice = notice
   h2
     = @fractal.name.to_s.capitalize
@@ -44,7 +44,7 @@
     ul.small-block-grid-2
       li :label
         | Depth
-        input type="number" ng-model="hr_depth" ng-init="hr_depth=depth+5"
+        input type="number" ng-model="hr_depth" ng-init="hr_depth=depth"
       li :label
         | Width
         input type="number" ng-model="hr_width"
@@ -61,7 +61,12 @@
       '
       a.dislike href=""
         = fa_icon 'thumbs-o-down'
-      
+  .row
+    h1#genes DNA
+  .row
+    ul.small-block-grid-1.large-block-grid-4.medium-block-grid-3
+      = render partial: 'fractals/preview', collection: @fractal.parts.includes(:fractal).map {|part| part.fractal.repeats= part.repeats;part.fractal}, as: :fractal
+    
 - unless [@ancestors, @children].all? {|g| g.empty?}
   .row
     h1#genealogy GENEALOGY
@@ -91,4 +96,4 @@
     h4 Be patient this may take a while
 
 - content_for :scripts
-  = javascript_include_tag "ifs_animation", "data-turbolinks-track" => true
+  = javascript_include_tag "ifs_chain_animation", "data-turbolinks-track" => true

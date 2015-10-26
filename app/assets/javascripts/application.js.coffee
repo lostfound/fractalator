@@ -23,7 +23,7 @@
 
 jQuery ->
   $(document).foundation()
-  if $("#main_section").height() < $(window).height()
+  if $("#main_section").height() + $("header").height() < $(window).height()
     $("footer").hide()
   window.modules = {}
   #$('[ng-app]').each ->

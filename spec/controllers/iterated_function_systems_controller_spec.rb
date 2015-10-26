@@ -19,6 +19,7 @@ require 'rails_helper'
 # that an instance is receiving a specific message.
 
 RSpec.describe IteratedFunctionSystemsController, type: :controller do
+  render_views
 
   # This should return the minimal set of attributes required to create a valid
   # IteratedFunctionSystem. As you add validations to IteratedFunctionSystem, be sure to
@@ -75,8 +76,9 @@ RSpec.describe IteratedFunctionSystemsController, type: :controller do
 
     describe "GET #show" do
       it "assigns the requested iterated_function_system as @fractal" do
-        iterated_function_system = create :ifs
+        iterated_function_system = create :ifs, user: @user
         get :show, {:id => iterated_function_system.to_param}, valid_session
+        
         expect(assigns(:fractal)).to eq(iterated_function_system)
       end
       it "redirects to previous page if requested fractal has other owner and has not the name" do
@@ -95,12 +97,34 @@ RSpec.describe IteratedFunctionSystemsController, type: :controller do
         get :new, {}, valid_session
         expect(assigns(:fractal)).to be_a_new(IteratedFunctionSystem)
       end
-      it "redirects to previous page if cloned fractal has other owner and has not the name" do
+    end
+    describe "GET #fork" do
+      before(:each) do
         @somebody = create :user
-        fractal = create :ifs, user: @somebody, name: ''
+        @fractal = create :ifs, transforms: "[]", user: @somebody, rec_number: 13, base_shape: 1
+        @private_fractal = create :ifs, transforms: "[]", user: @somebody, name: ''
+      end
+      it "assigns a new iterated_function_system as @fractal with inherited parametrs" do
+        get :fork, {id: @fractal.to_param}, valid_session
+        fractal = assigns(:fractal)
+        expect(assigns(:fractal)).to be_a(IteratedFunctionSystem)
+        expect(fractal.id).to be_nil
+        expect(fractal.parent).to eq(@fractal)
+        expect(fractal.transforms).to eq(@fractal.transforms)
+        expect(fractal.rec_number).to eq(@fractal.rec_number)
+        expect(fractal.base_shape).to eq(@fractal.base_shape)
+      end
+      it "assigns a new user's nonamed iterated_function_system as @fractal" do
+        @private_fractal.update user: @user
+        get :fork, {id: @private_fractal.to_param}, valid_session
+        fractal = assigns(:fractal)
+        expect(assigns(:fractal)).to be_a(IteratedFunctionSystem)
+        expect(fractal.parent).to eq(@private_fractal)
+      end
+      it "redirects to previous page if cloned fractal has other owner and has not the name" do
         reffer= "/god_is_dog"
         @request.env['HTTP_REFERER'] = reffer.clone
-        get :new, {:clone => fractal.to_param}, valid_session
+        get :fork, {id: @private_fractal.to_param}, valid_session
         expect(response).to redirect_to(reffer)
       end
     end

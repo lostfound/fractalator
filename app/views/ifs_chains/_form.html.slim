@@ -1,15 +1,53 @@
 - shapes = []
 - IteratedFunctionSystem::SHAPES.each_with_index {|n,i| shapes<<{id: i, name: n}}
 
-#ifs_editor ng-app="ifs" ng-controller="ifs_controller" ng-init="shapes=#{shapes.to_json}"
+#ifs_editor[
+  ng-app="ifs"
+  ng-controller="ifs_chain_controller"
+  ng-init="shapes=#{shapes.to_json}"
+  data-pipeline="#{@fractal.pipeline.to_json}"
+  ]
+      
+  .row.centered#fractal_selector[
+      data-path="#{iterated_function_systems_path(layout: 'chain')}"
+      ng-show="show_fractal_selector"]
+    .close[ng-if="pipeline.length > 0"]: a ng-click="close_selector()" Close
+    h3 Select IFS
+    #available_fractals
+  .row.centered#fractal_pipeline[
+      ng-show="!show_fractal_selector"]
+    .header
+      h3 style="position: relative"
+        |Chain
+      .add_fractal ng-click="add_fractal()"
+        .icon_button
+          = fa_icon 'plus-square'
+          span.name Add Fractal
+    ul.small-block-grid-3.large-block-grid-8.medium-block-grid-6.pipeline
+      li[
+        ng-repeat="fractal in pipeline"
+        ng-drop="true"
+        ng-drop-success="on_drop($index, $data,$event)"]
+        .preview[ng-drag="true" ng-drag-data="$index"]
+          img ng-src="{{ fractal.image_url }}"
+          .icon_button.success.change[
+            ng-click="ch_fractal($index)"]
+            = fa_icon 'ellipsis-h'
+            span.name Change
+          .icon_button.alert.destroy[
+            ng-click="rm_fractal($index)"
+            ng-if="pipeline.length > 1"
+            ]
+            = fa_icon "times"
+            span.name Delete
+        input.repeats type="number" ng-model="fractal.repeats"
+
+  / FORM
   = form_for @fractal, html: {id: :ifs_form} do |f|
     .row
       .medium-2.small-4.column ng-init="base_shape=#{@fractal.base_shape}"
         = f.label :base_shape
-        /select#iterated_function_system_base_shape name="iterated_function_system[base_shape]" ng-model="base_shape"
-          - IteratedFunctionSystem::SHAPES.each_with_index do |n,i|
-            option value="#{i}" #{n}
-        input#iterated_function_system_base_shape type="hidden" value="{{base_shape}}" name="iterated_function_system[base_shape]"
+        input#ifs_chain_base_shape type="hidden" value="{{base_shape}}" name="ifs_chain[base_shape]"
         select ng-model="base_shape" ng-options="shape.id as shape.name for shape in shapes" 
       .medium-2.small-4.columns
         = f.label :name
@@ -23,7 +61,7 @@
       .medium-2.small-4.columns
         br
         .button#submit_form Submit
-      = f.hidden_field :transforms
+      = f.hidden_field :pipeline
       = f.hidden_field :image
       = f.hidden_field :parent_id
     .row
@@ -34,9 +72,8 @@
             ul
               - @fractal.errors.full_messages.each do |message|
                 li = message
-      
   .row.centered
-    .ifs_half
+    /.ifs_half
       .button#rect_add 
         | {{ transformation ? 'Clone' : 'Add' }}
       .button#rect_up ng-show="transformation" up
@@ -86,30 +123,10 @@
         == render 'svg', ifs: @fractal, r: 1, show_coords: true
         #mouse_handler
     .ifs_half
-      /img#fractal_image  style="border-color: black; border-style: dotted;display:none"
-      /canvas#blackbird_fly width="400" height="400" style="border-color: black; border-style: dotted"
-      img#fractal_image  style="border-color: black; border-style: dotted;"
-      canvas#blackbird_fly width="400" height="400" style="border-color: black; border-style: dotted; display:none"
-      #image_filters ng-show="extra_opts"
-        h4 Image Filters
-        ul.inline-list
-          li: select ng-model="new_image_filter"
-            /- %W[Grayscale Invert Sepia Sepia2 Remove\ White Blur Sharpen Embross].each do |name|
-            - %W[Grayscale Invert Sepia Sepia2 Remove\ White Pixelate Brightness].each do |name|
-              option value="#{name}" = name
-          li: .button.tiny ng-click="add_image_filter()" ng-if="new_image_filter" add
-        ul.small-block-grid-3 ng-if="transformation.image_filters && transformation.image_filters.length>0"
-          li[
-            ng-repeat="imf in transformation.image_filters"
-            ]
-            h4[] {{ imf.name }}
-            a ng-click="rm_image_filter($index)" remove
-            div ng-repeat="prm in imf.params"
-              label
-                | {{ prm.name }}
-                input ng-change="refuck()" type="number" ng-model="prm.v" min="{{ prm.min }}" max="{{ prm.max }}"
-
+      img#fractal_image  style="border-color: black; border-style: dotted; display: none"
+      canvas#blackbird_fly width="400" height="400" style="border-color: black; border-style: dotted"
+      /; display:none"
 
 - content_for :scripts
   = stylesheet_link_tag    "iterated_function_systems", "data-turbolinks-track" => true
-  = javascript_include_tag "iterated_function_systems", "data-turbolinks-track" => true
+  = javascript_include_tag "ifs_chain", "data-turbolinks-track" => true

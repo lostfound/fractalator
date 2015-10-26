@@ -10,14 +10,14 @@
         dt SORT:
         
         - if session[:sort] == 'fresh'
-          dd.active = link_to iterated_function_systems_path(sort: :fresh) do
+          dd.active = link_to fractal_path('', sort: :fresh) do
             | fresh
-          dd = link_to iterated_function_systems_path(sort: :cools) do
+          dd = link_to fractal_path('', sort: :cools) do
             | cools
         - else
-          dd = link_to iterated_function_systems_path(sort: :fresh) do
+          dd = link_to fractal_path('', sort: :fresh) do
             | fresh
-          dd.active = link_to iterated_function_systems_path(sort: :cools) do
+          dd.active = link_to fractal_path('', sort: :cools) do
             | cools
     li = paginate @fractals
 /.row

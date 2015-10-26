@@ -1,37 +1,51 @@
-.fractal_preview.ifs data-id="#{ifs.id}"
+li: .fractal_preview.ifs data-id="#{fractal.id}"
   .title 
     .badge
-    = ifs.name.capitalize
+    - if fractal.try(:repeats)
+      = "#{fractal.repeats}x #{fractal.name.capitalize}"
+    - else
+      = fractal.name.capitalize
   .image
     - args = {}
-    - if params.has_key? :id
+    - if action_name == 'index' and params.has_key? :id
       - args[:uid]=params[:id] 
     - else
       - args[:sort]=session[:sort]
-    = link_to [ifs, args] do#, class: "show-for-small-only" do
-      = image_tag ifs.image_url
-    = link_to new_iterated_function_system_path(clone: ifs.id), class: %i[icon_button success fork] do
+
+    = link_to [fractal, args] do#, class: "show-for-small-only" do
+      = image_tag fractal.image_url
+    /= link_to new_iterated_function_system_path(clone: fractal.id), class: %i[icon_button success fork] do
+    = link_to [:fork, fractal], class: %i[icon_button success fork] do
       = fa_icon 'code-fork'
       span.name Fork
-    - if ifs.user == current_user
-      = link_to ifs, data: {:confirm => 'Are you sure?'}, :method => :delete,
+
+    - if can? :delete, fractal
+      = link_to fractal, data: {:confirm => 'Are you sure?'}, :method => :delete,
                 class: %i[icon_button alert destroy] do
         span.name Delete
         = fa_icon "times"
-      = link_to edit_iterated_function_system_path(ifs), class: %i[icon_button edit] do
+    - if can? :edit, fractal 
+      = link_to [:edit, fractal], class: %i[icon_button edit] do
         span.name Edit
         = fa_icon 'cutlery'
+
+    /= link_to_if can?(:delete, fractal), nil, fractal, data: {:confirm => 'Are you sure?'}, :method => :delete, class: %i[icon_button alert destroy] do
+      span.name Delete
+      = fa_icon "times"
+
   .bottom_field
     .likes
-      a.like href=""
-        = fa_icon 'thumbs-o-up', class: [:left]
-      strong.score = ifs.score
+      - if can_i_like fractal
+        a.like href=""
+          = fa_icon 'thumbs-o-up', class: [:left]
+      strong.score = fractal.score
       '
-      = fa_icon (ifs.score>=0)?'smile-o':'frown-o', class: :score_currency
-      a.dislike href=""
-        = fa_icon 'thumbs-o-down', class: [:right]
-      - if ifs.user.name
-        = link_to index_iterated_function_systems_path(id: ifs.user_id) do
-          span.label.round = "by #{ifs.user.name}"
+      = fa_icon (fractal.score>=0)?'smile-o':'frown-o', class: :score_currency
+      - if can_i_like fractal
+        a.dislike href=""
+          = fa_icon 'thumbs-o-down', class: [:right]
+      - if fractal.user.name
+        = link_to index_fractals_path(id: fractal.user_id) do
+          span.label.round = "by #{fractal.user.name}"
   .cut
   .cut2

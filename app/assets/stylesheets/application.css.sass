@@ -3,10 +3,13 @@
 @import foundation_and_overrides
 @import font-awesome
 
+#genealogy
+  margin-top: 3rem
 header
   margin-bottom: 2rem
 footer
   margin-top: 2rem
+  border-top: 3px solid $steel
 
 .fullscreen
   cursor: image-url('10stars.svg') 25 25, auto
@@ -66,6 +69,54 @@ body
   margin-right: auto
   width: 100%
   max-width: 85rem
+.gallery > ul
+  margin: 0
+#fractal_selector
+  position: relative
+  margin-bottom: 3em
+  border: solid 1px black
+  .close
+    position: absolute
+    left: 1em
+    top:  0.2em
+  #available_fractals 
+    & > ul
+      margin: 0
+    margin-bottom: 1em
+    img[data-url]
+      cursor: pointer
+#fractal_pipeline
+  margin-bottom: 3em
+  border: solid 1px black
+  .header
+    position: relative
+    .add_fractal
+      position: absolute
+      left: 1em
+      top:  0
+  .pipeline
+    padding-left: 1em
+    padding-right: 1em
+    & > ul
+      margin: 0
+    margin-bottom: 1em
+    .preview
+      position: relative
+      .destroy
+        position: absolute
+        left: 0
+        bottom: 0
+      .change
+        position: absolute
+        right: 0
+        bottom: 0
+      
+    img
+      cursor: pointer
+
+
+.bottom_of_show .icon_button
+  margin-left: 1rem
 
 .icon_button
   width: auto
@@ -109,7 +160,7 @@ body
   .cut2
     bottom: -1px
     right: -1px
-    border-bottom: 1.8rem solid $snow
+    border-bottom: 1.8rem solid white
     
   //border: 1px solid $oil
   .title
@@ -122,7 +173,7 @@ body
     .badge
       width: 0
       height: 0
-      border-top: 1.8rem solid $snow
+      border-top: 1.8rem solid white
       border-right: 4rem solid transparent
       position: absolute
       top: 0

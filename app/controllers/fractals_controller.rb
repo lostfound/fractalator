@@ -1,8 +1,8 @@
 class FractalsController < ApplicationController
-  before_action :set_fractal, only: %i[next prev show edit update destroy like]
+  before_action :set_fractal, only: %i[fork next prev show edit update destroy like]
   before_action :create_fractal, only: [:create]
   load_and_authorize_resource except: :like
-  PER_PAGE=16
+  PER_PAGE=24
 
   # GET /iterated_function_systems
   # GET /iterated_function_systems.json
@@ -22,18 +22,23 @@ class FractalsController < ApplicationController
     end
     @owner = uid.nil? ? nil : User.find(uid)
     @fractals = glass.includes(:user).list( user_id: uid, me: current_user, sort: session[:sort]||'cools').page(page).per(PER_PAGE) 
+    @can_i_like = Fractal.can_user_like current_user, @fractals.map {|f| f.id}
   end
 
   # GET /iterated_function_systems/1
   # GET /iterated_function_systems/1.json
   def show
-    @iter_args = {uid: params[:uid], sort: params[:sort], id: @fractal.id}
+    @iter_args = {uid: params[:uid], sort: params[:sort]}
+    @ancestors = @fractal.parents.where.not(name: '')
+    @children  = @fractal.all_children
+    @can_i_like = Fractal.can_user_like current_user, @ancestors.ids+@children.map {|fr| fr.id}
   end
 
   def next
     next_fractal = @fractal.next user_id: params[:uid], me: current_user, sort: params[:sort]
     redirect_to [next_fractal||@fractal, {uid: params[:uid], sort: params[:sort]}]
   end
+
   def prev
     prev_fractal = @fractal.prev user_id: params[:uid], me: current_user, sort: params[:sort]
     redirect_to [prev_fractal||@fractal, {uid: params[:uid], sort: params[:sort]}]
@@ -55,16 +60,21 @@ class FractalsController < ApplicationController
     end
   end
 
+  def fork
+    @fractal = glass.new transforms: @fractal.transforms, rec_number: @fractal.rec_number, parent: @fractal, base_shape: @fractal.base_shape
+    yield @fractal if block_given?
+    render 'new'
+  end
   # GET /iterated_function_systems/new
   def new
     @fractal = user_fractals.new
-    if params[:clone]
-      parent = glass.find(params[:clone].to_i)
-      raise CanCan::AccessDenied if parent.user != current_user and parent.name.to_s == ''
-      @fractal.transforms = parent.transforms 
-      @fractal.rec_number = parent.rec_number
-      @fractal.parent_id  = parent.id
-    end
+    #if params[:clone]
+    #  parent = glass.find(params[:clone].to_i)
+    #  raise CanCan::AccessDenied if parent.user != current_user and parent.name.to_s == ''
+    #  @fractal.transforms = parent.transforms 
+    #  @fractal.rec_number = parent.rec_number
+    #  @fractal.parent_id  = parent.id
+    #end
   end
 
   # GET /iterated_function_systems/1/edit
@@ -74,9 +84,10 @@ class FractalsController < ApplicationController
   # POST /iterated_function_systems
   # POST /iterated_function_systems.json
   def create
+    yield @fractal if block_given?
     respond_to do |format|
       if @fractal.save
-        format.html { redirect_to @fractal, notice: 'Iterated function system was successfully created.' }
+        format.html { redirect_to @fractal, notice: 'Fractal was successfully created.' }
         format.json { render action: 'show', status: :created, location: @fractal }
       else
         format.html { render action: 'new' }
@@ -88,9 +99,10 @@ class FractalsController < ApplicationController
   # PATCH/PUT /iterated_function_systems/1
   # PATCH/PUT /iterated_function_systems/1.json
   def update
+    yield @fractal if block_given?
     respond_to do |format|
       if @fractal.update(fractal_params)
-        format.html { redirect_to @fractal, notice: 'Iterated function system was successfully updated.' }
+        format.html { redirect_to @fractal, notice: 'Fractal was successfully updated.' }
         format.json { head :no_content }
       else
         format.html { render action: 'edit' }
@@ -113,6 +125,9 @@ class FractalsController < ApplicationController
   end
 
   private
+    def glass
+      Fractal
+    end
     
     # Use callbacks to share common setup or constraints between actions.
     def set_fractal

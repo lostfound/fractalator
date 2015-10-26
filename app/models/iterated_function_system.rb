@@ -2,6 +2,7 @@ require 'fileutils'
 require 'base64'
 class IteratedFunctionSystem < Fractal
   after_initialize :default_values
+  attr_accessor :repeats
   #after_save :save_image
   #after_create :save_image
   #scope :named, -> {where.not name: ''}

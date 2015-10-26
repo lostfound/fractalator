@@ -4,12 +4,14 @@ class Ability
   def initialize(user)
     user ||= User.new
     if user.id
-      can :read,   IteratedFunctionSystem, user_id: user.id, name: ''
-      can :read,   IteratedFunctionSystem.named
-      can :next,   IteratedFunctionSystem.named
-      can :prev,   IteratedFunctionSystem.named
-      can :create, IteratedFunctionSystem
-      can :manage, IteratedFunctionSystem, user_id: user.id
+      can :read,   Fractal, user_id: user.id, name: ''
+      can :read,   Fractal.named
+      can :next,   Fractal.named
+      can :prev,   Fractal.named
+      can :create, Fractal
+      can :manage, Fractal, user_id: user.id
+      can :fork,   Fractal, user_id: user.id
+      can :fork,   Fractal.named
 
     end
     
