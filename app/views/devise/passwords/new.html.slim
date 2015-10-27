@@ -1,0 +1,13 @@
+.row.centered#login_page
+  h2 Forgot your password?
+  .half#sign_in_tab class="#{(%w[index sign_in].include?action_name)?'active':''}"
+      = devise_error_messages!
+      .f
+        = form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| 
+          = f.label :email do
+            | E-mail
+            = f.email_field :email, autofocus: true, required: true
+          = f.submit "Send Me reset password instructions", class: :button
+      = link_to root_path
+        | BACK
+
