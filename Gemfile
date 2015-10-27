@@ -45,7 +45,6 @@ gem "faker"
 gem "redcarpet"
 gem 'jquery-hotkeys-rails'
 gem 'omniauth'
-#gem 'omniauth-vkontakte'
 gem 'omniauth-twitter'
 
 group :doc do
