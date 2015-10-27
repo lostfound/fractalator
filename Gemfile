@@ -53,6 +53,7 @@ group :doc do
 end
 group :production do
   gem 'postgresql'
+  gem 'thin'
 end
 group :test do
   gem 'capybara'
