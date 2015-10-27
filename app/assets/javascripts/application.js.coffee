@@ -12,15 +12,16 @@
 #
 #= require jquery2
 #= require jquery.turbolinks
+#= require foundation
 #= require turbolinks
 #= require angular
 #= require angular-route
 #= require angular-turbolinks
 #= require jquery_ujs
 #= require vendor/modernizr
-#= require foundation
 #= require jquery-hotkeys
 
+$(document).foundation()
 jQuery ->
   $(document).foundation()
   if $("#main_section").height() + $("header").height() < $(window).height()

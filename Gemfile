@@ -45,7 +45,7 @@ gem "faker"
 gem "redcarpet"
 gem 'jquery-hotkeys-rails'
 gem 'omniauth'
-gem 'omniauth-vkontakte'
+#gem 'omniauth-vkontakte'
 gem 'omniauth-twitter'
 
 group :doc do
@@ -62,11 +62,11 @@ group :test, :development do
   gem 'rspec-rails'
   gem 'factory_girl_rails'
 end
-group :development do
-  gem 'capistrano'
-  gem 'capistrano-rails'
-  gem 'capistrano-bundler'
-end
+#group :development do
+#  gem 'capistrano'
+#  gem 'capistrano-rails'
+#  gem 'capistrano-bundler'
+#end
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.1.2'
