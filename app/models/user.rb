@@ -8,12 +8,12 @@ class User < ActiveRecord::Base
   has_many :ifs_chains, class_name: :IfsChain, foreign_key: :user_id, dependent: :destroy
   has_many :fractals, class_name: :Fractal, foreign_key: :user_id, dependent: :destroy
   has_many :likes
-  def self.find_for_vk_oauth access_token
-    if user = User.where(provider: 'vkontakte', url: access_token.info.urls.Vkontakte).first
+  def self.find_for_tumblr_oauth access_token
+    if user = User.where(provider: 'tumblr', url: access_token.info.urls.Tumblr).first
       user
     else
       password = Devise.friendly_token
-      User.create! password: password, provider: :vkontakte, url: access_token.info.urls.Vkontakte, email: nil, password_confirmation: password
+      User.create! password: password, provider: :tumblr, url: access_token.info.urls.Tumblr, email: nil, password_confirmation: password
     end
   end
   def self.find_for_twitter_oauth access_token

@@ -46,6 +46,7 @@ gem "redcarpet"
 gem 'jquery-hotkeys-rails'
 gem 'omniauth'
 gem 'omniauth-twitter'
+gem 'omniauth-tumblr'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
