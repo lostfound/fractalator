@@ -34,7 +34,7 @@ controllers.controller("ifs_controller", [ '$scope',
         $('body').removeClass 'body_blocked'
       $("##{args.canvas_id}").attr 'width', scope.hr_width
       $("##{args.canvas_id}").attr 'height', scope.hr_width
-      @hdfs = new IfsRenderer args
+      @hdfs = new IfsChainRender args
       hr_pipeline = []
       for part in scope.pipeline
         transforms = []

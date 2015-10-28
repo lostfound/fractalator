@@ -94,33 +94,57 @@ class Fractal < ActiveRecord::Base
     parents.where(parent_id: nil).first
   end
 
-  def self.tree(instance)
-    tree_sql =  <<-SQL
-      WITH RECURSIVE
-        tree(n) AS (
-          VALUES(#{instance.id})
-          UNION
-          SELECT id FROM fractals, tree
-           WHERE fractals.parent_id = tree.n
-        )
-      SELECT id FROM fractals
-       WHERE fractals.id IN tree
-    SQL
+  if false
+    def self.tree(instance)
+      tree_sql =  <<-SQL
+        WITH RECURSIVE
+          tree(n) AS (
+            VALUES(#{instance.id})
+            UNION
+            SELECT id FROM fractals, tree
+             WHERE fractals.parent_id = tree.n
+          )
+        SELECT id FROM fractals
+         WHERE fractals.id IN tree
+      SQL
+    end
+    def self.tree_rev(instance)
+      tree_sql =  <<-SQL
+        WITH RECURSIVE
+          tree(n) AS (
+            VALUES(#{instance.parent_id||-1})
+            UNION
+            SELECT parent_id FROM fractals, tree
+             WHERE fractals.id = tree.n
+          )
+        SELECT id FROM fractals
+         WHERE fractals.id IN tree
+      SQL
+    end
+  else
+    def self.tree(instance)
+      tree_sql =  <<-SQL
+        WITH RECURSIVE tree(n) AS (
+            VALUES(#{instance.id})
+            UNION ALL
+            SELECT id FROM fractals, tree
+             WHERE fractals.parent_id = tree.n
+          )
+        SELECT * from tree
+      SQL
+    end
+    def self.tree_rev(instance)
+      tree_sql =  <<-SQL
+        WITH RECURSIVE tree(n) AS (
+            VALUES( #{instance.parent_id||-1} )
+            UNION ALL
+            SELECT parent_id FROM fractals, tree
+             WHERE fractals.id = tree.n
+          )
+        SELECT * from tree
+      SQL
+    end
   end
-  def self.tree_rev(instance)
-    tree_sql =  <<-SQL
-      WITH RECURSIVE
-        tree(n) AS (
-          VALUES(#{instance.parent_id||-1})
-          UNION
-          SELECT parent_id FROM fractals, tree
-           WHERE fractals.id = tree.n
-        )
-      SELECT id FROM fractals
-       WHERE fractals.id IN tree
-    SQL
-  end
-
 private
   def name_must_be_ascii_only
     unless name.nil?

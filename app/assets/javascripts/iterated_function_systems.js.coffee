@@ -59,6 +59,7 @@ jQuery ->
       o={}
       for prop in ifs_properties
         o[prop] = opts[prop] if opts[prop] != undefined
+      o.image_filters = JSON.parse(JSON.stringify o.image_filters) if o.image_filters
       opts = o
 
       #opts = o
