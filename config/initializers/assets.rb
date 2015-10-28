@@ -9,3 +9,4 @@ Rails.application.config.assets.version = '1.0'
 # Precompile additional assets.
 # application.js, application.css, and all non-JS/CSS in app/assets folder are already added.
 Rails.application.config.assets.precompile += %w( ifs*.js iterated_function_systems.js )
+Rails.application.config.assets.precompile += %w( app/assets/stylesheets/scaffolds.css ifs*.css iterated_function_systems.css )
