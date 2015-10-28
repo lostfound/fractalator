@@ -10,6 +10,9 @@
           = fa_icon :twitter
           | twitter
         | or
+        = link_to user_omniauth_authorize_path(:twitter), class: [:button, :smallbtn], style: "margin-right: 10px"
+          = fa_icon :tumblr
+          | tumblr
       .f
         = form_for @sin_user||User.new, url: main_signIn_path do |f|
           = f.label :email do
