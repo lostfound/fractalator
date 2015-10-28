@@ -9,11 +9,11 @@ class User < ActiveRecord::Base
   has_many :fractals, class_name: :Fractal, foreign_key: :user_id, dependent: :destroy
   has_many :likes
   def self.find_for_tumblr_oauth access_token
-    if user = User.where(provider: 'tumblr', url: access_token.info.urls.Tumblr).first
+    if user = User.where(provider: 'tumblr', url: access_token.info.uid).first
       user
     else
       password = Devise.friendly_token
-      User.create! password: password, provider: :tumblr, url: access_token.info.urls.Tumblr, email: nil, password_confirmation: password
+      User.create! password: password, provider: :tumblr, url: access_token.info.uid, email: nil, password_confirmation: password
     end
   end
   def self.find_for_twitter_oauth access_token
