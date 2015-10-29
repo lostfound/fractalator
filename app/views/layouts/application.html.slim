@@ -54,12 +54,9 @@ html lang="en"
             | Logout
   body
     - unless user_signed_in?
-      nav.top-bar class="[medium large content]"
-        ul.title-area
-          li.name
-           h1
-            = link_to main_index_path do
-              | FRACTALATOR
+      header
+        h1.text-center#fractalator  Fractalator
+        = yield :navigation
       = yield 
     - else
       header
