@@ -123,9 +123,10 @@
         == render 'svg', ifs: @fractal, r: 1, show_coords: true
         #mouse_handler
     .ifs_half
-      img#fractal_image  style="border-color: black; border-style: dotted; display: none"
-      canvas#blackbird_fly width="400" height="400" style="border-color: black; border-style: dotted"
-      /; display:none"
+      .white
+        img#fractal_image  style="border-color: black; border-style: dotted; display: none"
+        canvas#blackbird_fly width="400" height="400" style="border-color: black; border-style: dotted"
+        /; display:none"
 
 - content_for :scripts
   = stylesheet_link_tag    "iterated_function_systems", "data-turbolinks-track" => true

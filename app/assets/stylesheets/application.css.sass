@@ -6,6 +6,11 @@
 #error_explanation
   h2
     font-size: 1.2em
+body
+  background-image: image-url('triangles_bg.png')
+  
+.white
+  background: white
 #genealogy
   margin-top: 3rem
 header
@@ -177,7 +182,10 @@ body
   .title
     padding: 0.9375rem 
     text-align: center
+    text-shadow: -1px -1px 3px black 
+    min-height: 3.4em
     background: $oil
+    background-image: image-url('preview_header.png')
     position: relative
     color: $smoke
 
@@ -332,7 +340,8 @@ a.dislike i:hover
   width: 100px
 
 .select_your_name
-  max-width: 250px
+
+  display: inline-block
   text-align: left
   margin-left: auto
   margin-right: auto

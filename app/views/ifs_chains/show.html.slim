@@ -14,7 +14,7 @@
       /= link_to prev_iterated_function_systems_path(@iter_args), class: :prev do
       = link_to [:prev, @fractal, @iter_args], class: :prev do
         | prev -->
-    div: canvas#blackbird_fly width="400" height="400" style="border-color: black; border-style: dotted"
+    div.white: canvas#blackbird_fly width="400" height="400" style="border-color: black; border-style: dotted"
     = hidden_field_tag :base_shape, @fractal.base_shape
     .bottom_of_show
       = link_to @fractal.image_url do
