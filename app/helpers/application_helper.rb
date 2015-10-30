@@ -3,7 +3,7 @@ module ApplicationHelper
     @markdown ||= Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, space_after_headers: true, fenced_code_blocks: true)
     @markdown.render(content)
   end
-  def fractal_path actn, args={}
+  def smart_fractal_path actn, args={}
     name = case controller_name
     when 'ifs_chains'
       "ifs_chain"

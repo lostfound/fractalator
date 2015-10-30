@@ -22,7 +22,17 @@
 #= require jquery-hotkeys
 
 $(document).foundation()
+scroll_pos=null
+$(document).on 'page:load', ->
+  if scroll_pos
+    $(document).scrollTop scroll_pos
+    scroll_pos = null
+
 jQuery ->
+  $("body").off 'click', '.keepscroll'
+  $("body").on 'click', '.keepscroll', ->
+    scroll_pos = $(document).scrollTop()
+    true
   $(document).foundation()
   if $("#main_section").height() + $("header").height() < $(window).height()
     $("footer").hide()

@@ -23,13 +23,4 @@
   /- unless @fractal.description.empty?
     .panel
       = markdown(@fractal.description).html_safe
-  .likes.ifs data-id="#{@fractal.id}"
-    a.like href=""
-      = fa_icon 'thumbs-o-up', class: [:left]
-    strong.score = @fractal.score
-    '
-    = fa_icon (@fractal.score>=0)?'smile-o':'frown-o', class: :score_currency
-    '
-    a.dislike href=""
-      = fa_icon 'thumbs-o-down'
 

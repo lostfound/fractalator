@@ -32,15 +32,33 @@ class FractalsController < ApplicationController
     @ancestors = @fractal.parents.where.not(name: '')
     @children  = @fractal.all_children
     @can_i_like = Fractal.can_user_like current_user, @ancestors.ids+@children.map {|fr| fr.id}
+    case @fractal
+    when IfsChain
+      @dna = @fractal.parts.includes(:fractal).map {|part| part.fractal.repeats= part.repeats;part.fractal}
+      @can_i_like.merge Fractal.can_user_like current_user, @dna.map {|fr| fr.id}
+      @hrd = 0
+      @angular_controller = 'ifs_chain_animation'
+      @angular_init       = {pipeline: @fractal.pipeline,
+                             depth: @fractal.rec_number,
+                             base_shape: @fractal.base_shape}.to_json
+    when IteratedFunctionSystem
+      @hrd = 5
+      @angular_controller = 'ifs_animation'
+      @angular_init       = {transforms: JSON.parse( @fractal.transforms ),
+                             depth: @fractal.rec_number,
+                             base_shape: @fractal.base_shape}.to_json
+    end
   end
 
   def next
     next_fractal = @fractal.next user_id: params[:uid], me: current_user, sort: params[:sort]
+    #redirect_to fractal_path(next_fractal||@fractal, {uid: params[:uid], sort: params[:sort]})
     redirect_to [next_fractal||@fractal, {uid: params[:uid], sort: params[:sort]}]
   end
 
   def prev
     prev_fractal = @fractal.prev user_id: params[:uid], me: current_user, sort: params[:sort]
+    #redirect_to fractal_path(prev_fractal||@fractal, {uid: params[:uid], sort: params[:sort]})
     redirect_to [prev_fractal||@fractal, {uid: params[:uid], sort: params[:sort]}]
   end
 

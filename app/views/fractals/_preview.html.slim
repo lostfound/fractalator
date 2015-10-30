@@ -12,9 +12,8 @@ li: .fractal_preview.ifs data-id="#{fractal.id}"
     - else
       - args[:sort]=session[:sort]
 
-    = link_to [fractal, args] do#, class: "show-for-small-only" do
+    = link_to [fractal, args] do
       = image_tag fractal.image_url
-    /= link_to new_iterated_function_system_path(clone: fractal.id), class: %i[icon_button success fork] do
     = link_to [:fork, fractal], class: %i[icon_button success fork] do
       = fa_icon 'code-fork'
       span.name Fork

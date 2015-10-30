@@ -7,10 +7,13 @@ controllers = angular.module('controllers',[])
 controllers.controller("custom_fractal", [ '$scope',
   (scope)->
   ])
-controllers.controller("ifs_controller", [ '$scope',
+controllers.controller("ifs_chain_animation", [ '$scope',
   (scope)->
     localStorage.ifs_animation_timeout||=200
     localStorage.hr_width||=2000
+    data = $("[data-json]").data('json')
+    for k, v of data
+      scope[k] = v
 
     scope.timeout = parseInt localStorage.ifs_animation_timeout
     scope.show_transf=false
@@ -49,24 +52,20 @@ controllers.controller("ifs_controller", [ '$scope',
         hr_pipeline.push {transforms: transforms, repeats: part.repeats}
       @hdfs.render hr_pipeline, true
       
+    ifs_eng = new IfsChainRender scope: scope
+    ifs_eng.render  scope.pipeline, true
+    scope.$watch 'timeout', (n,o)=>
+      localStorage.ifs_animation_timeout = parseInt n
+    scope.$watch 'hr_width', (n,o)=>
+      localStorage.hr_width = parseInt n
+    scope.$watch 'show_transf', (n,o)=>
+      ifs_eng.show_transformations()
+    scope.$watch 'depth', (n,o)=>
+      if on<0 or o<0
+        ifs_eng.render  scope.pipeline, true
+      else
+        ifs_eng.render  scope.pipeline, true
+    $("body").off 'click', '#blackbird_fly'
+    $("body").on 'click', '#blackbird_fly', =>
+      ifs_eng.render  scope.pipeline, true
   ])
-
-jQuery ->
-  @ifs_scope = $('[ng-controller=ifs_controller]').scope()
-  @ifs_eng = new IfsChainRender scope: @ifs_scope
-  @ifs_eng.render  @ifs_scope.pipeline, true
-  @ifs_scope.$watch 'timeout', (n,o)=>
-    localStorage.ifs_animation_timeout = parseInt n
-  @ifs_scope.$watch 'hr_width', (n,o)=>
-    localStorage.hr_width = parseInt n
-  @ifs_scope.$watch 'show_transf', (n,o)=>
-    @ifs_eng.show_transformations()
-  @ifs_scope.$watch 'depth', (n,o)=>
-    console.log "!"
-    if on<0 or o<0
-      @ifs_eng.render  @ifs_scope.pipeline, true
-    else
-      @ifs_eng.render  @ifs_scope.pipeline, true
-  $("body").off 'click', '#blackbird_fly'
-  $("body").on 'click', '#blackbird_fly', =>
-    @ifs_eng.render  @ifs_scope.pipeline, true

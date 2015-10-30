@@ -1,0 +1,11 @@
+.row ng-app="ifs" ng-controller="#{@angular_controller}" data-json="#{@angular_init}"
+  = render 'fractals/ifs_show_header'
+  = render 'fractals/ifs_show_canvas'
+  = render 'fractals/ifs_show_options', hr_depth: @hrd
+
+= render 'fractals/ifs_show_genealogy'
+= render 'fractals/ifs_show_modal'
+
+
+- content_for :scripts
+  = javascript_include_tag "ifs_animation", "data-turbolinks-track" => true

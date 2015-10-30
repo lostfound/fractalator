@@ -1,9 +1,20 @@
 .large-6.medium-8.columns.ifs data-id="#{@fractal.id}"
   .nextprev
-    = link_to [:next, @fractal, @iter_args], class: :next do
+    = link_to next_fractal_path(@fractal, @iter_args), class: %i[next keepscroll] do
       = fa_icon "long-arrow-left"
       | next fractal
-    = link_to [:prev, @fractal, @iter_args], class: :prev do
+
+    .likes.ifs data-id="#{@fractal.id}"
+      a.like href=""
+        = fa_icon 'thumbs-o-up', class: [:left]
+      strong.score = @fractal.score
+      '
+      = fa_icon (@fractal.score>=0)?'smile-o':'frown-o', class: :score_currency
+      '
+      a.dislike href=""
+        = fa_icon 'thumbs-o-down'
+
+    = link_to prev_fractal_path(@fractal, @iter_args), class: %i[prev keepscroll] do
       | previous fractal
       = fa_icon "long-arrow-right"
   div.white: canvas#blackbird_fly width="400" height="400" style="border-color: black; border-style: dotted"

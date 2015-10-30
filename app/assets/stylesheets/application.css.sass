@@ -11,6 +11,7 @@ body
   
 .white
   background: white
+  display: inline-block
 #genealogy
   margin-top: 3rem
 header
@@ -29,18 +30,22 @@ footer
 .fullscreen
   cursor: image-url('10stars.svg') 25 25, auto
 .nextprev
-  position: relative
   height: 2rem
-  display: block
+  display: flex
   width: 400px
+  .likes
+    text-align: center
+    flex: 1
+    -webkit-flex: 1
   .next
-    position: absolute
-    bottom: 0
-    left:   0
+    flex: 1
+    -webkit-flex: 1
   .prev
-    position: absolute
-    bottom: 0
-    right:   0
+    flex: 1
+    -webkit-flex: 1
+    text-align: right
+    i
+      margin-right: 0
 .ifs_shower_options
   input[type=number]
     max-width: 6.25rem

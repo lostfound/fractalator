@@ -14,11 +14,6 @@ class IfsChainsController < FractalsController
       fractal.pipeline = JSON.parse params[:ifs_chain][:pipeline], symbolize_names: true
     end
   end
-  def show
-    super
-    @dna = @fractal.parts.includes(:fractal).map {|part| part.fractal.repeats= part.repeats;part.fractal}
-    @can_i_like.merge Fractal.can_user_like current_user, @dna.map {|fr| fr.id}
-  end
   private
     def user_fractals user=nil
       u=user||current_user
