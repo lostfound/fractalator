@@ -16,6 +16,7 @@ controllers.controller("ifs_controller", [ '$scope',
     scope.show_transf=false
     scope.hr_width = parseInt localStorage.hr_width
     scope.instanced = false
+    scope.hr_depth = scope.depth
     scope.make_hr= =>
       $('body').addClass 'body_blocked'
       args = {}

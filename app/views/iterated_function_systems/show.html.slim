@@ -1,94 +1,11 @@
 .row ng-app="ifs" ng-controller="ifs_controller" ng-init="transforms=#{@fractal.transforms}; depth=#{@fractal.rec_number}; base_shape=#{@fractal.base_shape}"
-  p#notice = notice
-  h2
-    = @fractal.name.to_s.capitalize
-    - if @fractal.user.name
-      span.label.round = "by #{@fractal.user.name}"
+  = render 'fractals/ifs_show_header'
+  = render 'fractals/ifs_show_canvas'
+  = render 'fractals/ifs_show_options', hr_depth: 5
 
+= render 'fractals/ifs_show_genealogy'
+= render 'fractals/ifs_show_modal'
 
-  .large-6.medium-8.columns.ifs data-id="#{@fractal.id}"
-    .nextprev
-      /= link_to next_iterated_function_systems_path(@iter_args), class: :next do
-      = link_to [:next, @fractal, @iter_args], class: :next do
-        | <-- next
-      /= link_to prev_iterated_function_systems_path(@iter_args), class: :prev do
-      = link_to [:prev, @fractal, @iter_args], class: :prev do
-        | prev -->
-    div.white: canvas#blackbird_fly width="400" height="400" style="border-color: black; border-style: dotted"
-    = hidden_field_tag :base_shape, @fractal.base_shape
-    .bottom_of_show
-      = link_to @fractal.image_url do
-        | Download PNG
-
-      = link_to [:fork, @fractal], class: %i[icon_button success] do
-        = fa_icon 'code-fork'
-        | Fork
-      - if can? :edit, @fractal 
-        = link_to [:edit, @fractal], class: %i[icon_button] do
-          = fa_icon 'cutlery'
-          | Edit
-
-  .large-6.medium-4.columns.ifs_shower_options
-    = label_tag :max_rec do
-      | Depth:
-    = number_field_tag :depth, @fractal.rec_number, "ng-model" => 'depth'
-    = label_tag :timeout do
-      | Timeout (ms)
-    = number_field_tag :timeout, nil, 'ng-model' => 'timeout'
-    | Show Transformations
-    .switch
-      input#show_transf ng-model="show_transf" type="checkbox"
-      = label_tag :show_transf do
-        | Show Transformations
-    h3 High Resolution
-    ul.small-block-grid-2
-      li :label
-        | Depth
-        input type="number" ng-model="hr_depth" ng-init="hr_depth=depth+5"
-      li :label
-        | Width
-        input type="number" ng-model="hr_width"
-    .button ng-click="make_hr()" Make
-    /- unless @fractal.description.empty?
-      .panel
-        = markdown(@fractal.description).html_safe
-    .likes.ifs data-id="#{@fractal.id}"
-      a.like href=""
-        = fa_icon 'thumbs-o-up', class: [:left]
-      strong.score = @fractal.score
-      '
-      = fa_icon (@fractal.score>=0)?'smile-o':'frown-o', class: :score_currency
-      '
-      a.dislike href=""
-        = fa_icon 'thumbs-o-down'
-      
-- unless [@ancestors, @children].all? {|g| g.empty?}
-  .row
-    h1#genealogy GENEALOGY
-
-- unless @ancestors.empty?
-  .row
-    h2 Ancestors
-  .row
-    ul.small-block-grid-1.large-block-grid-4.medium-block-grid-3
-      = render partial: 'fractals/preview', collection: @ancestors, as: :fractal
-- unless @children.empty?
-  .row
-    h2 Children
-  .row
-    ul.small-block-grid-1.large-block-grid-4.medium-block-grid-3
-      = render partial: 'fractals/preview', collection: @children, as: :fractal
-    
-
-
-- content_for :modal
-  #mk_big_image.modal_win ng-app="ifs" ng-controller="custom_fractal"
-    h3 Making high resolution image
-    .progress.success.radius
-     span.meter style="width: 0%"
-    canvas#render_hd style="display:none" width="2000" height="2000"
-    img#fractal_hd width="10%" style="display:none"
-    h4 Be patient this may take a while
 
 - content_for :scripts
   = javascript_include_tag "ifs_animation", "data-turbolinks-track" => true

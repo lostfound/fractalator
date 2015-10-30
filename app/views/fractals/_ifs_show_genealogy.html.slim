@@ -1,0 +1,17 @@
+- unless [@ancestors, @children].all? {|g| g.empty?}
+  .row
+    h1#genealogy GENEALOGY
+
+- unless @ancestors.empty?
+  .row
+    h2 Ancestors
+  .row
+    ul.small-block-grid-1.large-block-grid-4.medium-block-grid-3
+      = render partial: 'fractals/preview', collection: @ancestors, as: :fractal
+- unless @children.empty?
+  .row
+    h2 Children
+  .row
+    ul.small-block-grid-1.large-block-grid-4.medium-block-grid-3
+      = render partial: 'fractals/preview', collection: @children, as: :fractal
+

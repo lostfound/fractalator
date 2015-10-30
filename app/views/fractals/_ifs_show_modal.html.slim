@@ -1,0 +1,9 @@
+- content_for :modal
+  #mk_big_image.modal_win ng-app="ifs" ng-controller="custom_fractal"
+    h3 Making high resolution image
+    .progress.success.radius
+     span.meter style="width: 0%"
+    canvas#render_hd style="display:none" width="2000" height="2000"
+    img#fractal_hd width="10%" style="display:none"
+    h4 Be patient this may take a while
+

@@ -1,6 +1,9 @@
 class MainController < ApplicationController
   before_action :check_signin, only: [:ifs]
   def index
+    if user_signed_in?
+      redirect_to fractals_path unless current_user.name.blank?
+    end
   end
 
   def curves
@@ -34,8 +37,7 @@ class MainController < ApplicationController
   end
   def set_name
     if user_signed_in? and params[:name]
-      current_user.update(name: params[:name])
-
+      return redirect_to fractals_path if current_user.update(name: params[:name])
     end
     render "index"
   end

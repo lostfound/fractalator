@@ -1,0 +1,22 @@
+.large-6.medium-8.columns.ifs data-id="#{@fractal.id}"
+  .nextprev
+    = link_to [:next, @fractal, @iter_args], class: :next do
+      = fa_icon "long-arrow-left"
+      | next fractal
+    = link_to [:prev, @fractal, @iter_args], class: :prev do
+      | previous fractal
+      = fa_icon "long-arrow-right"
+  div.white: canvas#blackbird_fly width="400" height="400" style="border-color: black; border-style: dotted"
+  = hidden_field_tag :base_shape, @fractal.base_shape
+  .bottom_of_show
+    = link_to @fractal.image_url do
+      | Download PNG
+
+    = link_to [:fork, @fractal], class: %i[icon_button success] do
+      = fa_icon 'code-fork'
+      | Fork
+    - if can? :edit, @fractal 
+      = link_to [:edit, @fractal], class: %i[icon_button] do
+        = fa_icon 'cutlery'
+        | Edit
+

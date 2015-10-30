@@ -1,0 +1,6 @@
+p#notice = notice
+h2
+  = @fractal.name.to_s.capitalize
+  - if @fractal.user.name
+    = link_to index_fractals_path(id: @fractal.user_id) do
+      span.label.round = "by #{@fractal.user.name}"

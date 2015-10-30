@@ -1,0 +1,35 @@
+- hr_depth||=0
+.large-6.medium-4.columns.ifs_shower_options
+  = label_tag :max_rec do
+    | Depth:
+  = number_field_tag :depth, @fractal.rec_number, "ng-model" => 'depth'
+  = label_tag :timeout do
+    | Timeout (ms)
+  = number_field_tag :timeout, nil, 'ng-model' => 'timeout'
+  | Show Transformations
+  .switch
+    input#show_transf ng-model="show_transf" type="checkbox"
+    = label_tag :show_transf do
+      | Show Transformations
+  h3 High Resolution
+  ul.small-block-grid-2
+    li :label
+      | Depth
+      input type="number" ng-model="hr_depth" ng-init="hr_depth=depth+#{hr_depth}"
+    li :label
+      | Width
+      input type="number" ng-model="hr_width"
+  .button ng-click="make_hr()" Make
+  /- unless @fractal.description.empty?
+    .panel
+      = markdown(@fractal.description).html_safe
+  .likes.ifs data-id="#{@fractal.id}"
+    a.like href=""
+      = fa_icon 'thumbs-o-up', class: [:left]
+    strong.score = @fractal.score
+    '
+    = fa_icon (@fractal.score>=0)?'smile-o':'frown-o', class: :score_currency
+    '
+    a.dislike href=""
+      = fa_icon 'thumbs-o-down'
+
