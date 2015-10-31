@@ -2,6 +2,12 @@
   = render 'fractals/ifs_show_header'
   = render 'fractals/ifs_show_canvas'
   = render 'fractals/ifs_show_options', hr_depth: @hrd
+  - if @fractal.is_a? IfsChain
+    .row
+      h1#genes DNA
+    .row
+      ul.small-block-grid-1.large-block-grid-4.medium-block-grid-3
+        = render partial: 'fractals/preview', collection: @fractal.parts.includes(:fractal).map {|part| part.fractal.repeats= part.repeats;part.fractal}, as: :fractal
 
 = render 'fractals/ifs_show_genealogy'
 = render 'fractals/ifs_show_modal'
