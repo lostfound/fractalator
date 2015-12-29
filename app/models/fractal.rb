@@ -9,6 +9,8 @@ class Fractal < ActiveRecord::Base
   validates :parent, presence: true, unless: 'parent_id.nil?'
   validate  :parent_cannot_be_me
   validate  :name_must_be_ascii_only
+  validates :name, length: {maximum: 45}
+  validates :description, length: {maximum: 400}
   before_validation :strips
   scope :named, -> {where.not name: ''}
   scope :fresh, -> {order "created_at desc"}
