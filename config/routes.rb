@@ -30,7 +30,7 @@ Fractalator::Application.routes.draw do
   post "main/signIn"
   post "main/signUp"
   post "main/set_name"
-  devise_for :users,  controllers: { :omniauth_callbacks => "users/omniauth_callbacks" }
+  devise_for :users,  controllers: { :omniauth_callbacks => "users/omniauth_callbacks", passwords: "passwords" }
   get "main/index"
   get "main/curves"
   root to: "main#index"
