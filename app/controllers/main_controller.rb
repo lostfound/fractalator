@@ -1,5 +1,6 @@
 class MainController < ApplicationController
   before_action :check_signin, only: [:ifs]
+  before_action :random_fractals
   def index
     if user_signed_in?
       redirect_to fractals_path unless current_user.name.blank?
@@ -47,6 +48,11 @@ private
   end
   def check_signin
     redirect_to main_index_path unless user_signed_in?
+  end
+  def random_fractals
+    @fractals = Fractal.named.where('score > 1').order("random()").limit(4).to_a
+    @fractals += Fractal.named.where('score > 2').order("random()").limit(2).to_a
+    @fractals= @fractals.shuffle
   end
   
 end

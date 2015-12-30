@@ -1,4 +1,8 @@
+require 'pp'
 class Users::OmniauthCallbacksController < ApplicationController
+  def failure
+    redirect_to root_path
+  end
 
   def tumblr
     user=User.find_for_tumblr_oauth request.env["omniauth.auth"]

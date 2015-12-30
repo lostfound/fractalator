@@ -3,6 +3,9 @@ class Ability
 
   def initialize(user)
     user ||= User.new
+    can :read,   Fractal.named
+    can :next,   Fractal.named
+    can :prev,   Fractal.named
     if user.id
       can :read,   Fractal, user_id: user.id, name: ''
       can :read,   Fractal.named

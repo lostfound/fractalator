@@ -45,4 +45,7 @@
           | Password confirmation
           = f.password_field :password_confirmation, autocomplete: "off", required: true
         = f.submit "Sign Up", class: :button
+.row.centered style="margin-height: 30px"
+ ul.small-block-grid-1.large-block-grid-6.medium-block-grid-3
+  = render partial: 'fractals/preview', collection: @fractals, as: :fractal
 
