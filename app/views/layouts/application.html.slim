@@ -52,6 +52,13 @@ html lang="en"
 
           = link_to  destroy_user_session_path, method: :delete, class: :item do
             | Logout
+      - elsif controller_name != 'main'
+        ul.small-block-grid-2.large-block-grid-2.header
+          li
+            = link_to 'Login/Register', root_path, class: 'text-center'
+          li
+            = link_to 'Gallery', fractals_path, class: 'text-center'
+        
   body
     - unless user_signed_in?
       header

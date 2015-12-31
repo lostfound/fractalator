@@ -3,6 +3,7 @@ class Ability
 
   def initialize(user)
     user ||= User.new
+    can :index,   Fractal
     can :read,   Fractal.named
     can :next,   Fractal.named
     can :prev,   Fractal.named
