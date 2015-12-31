@@ -1,6 +1,6 @@
 .row
   ul.inline-list
-    - if @owner == current_user
+    - if current_user.present? and @owner == current_user
       li: h2.text-center My Fractals
     - elsif @owner
       li: h2.text-center #{@owner.name||'Nonamed guy'}'s Gallery
