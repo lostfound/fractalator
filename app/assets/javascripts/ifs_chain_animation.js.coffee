@@ -2,7 +2,7 @@
 #= require fabric
 #= require ifs_chain_render
 #= require intense
-angular.module('ifs',["controllers", 'ngRoute', 'ngTurbolinks'])
+angular.module('ifs',["controllers"])
 controllers = angular.module('controllers',[])
 controllers.controller("custom_fractal", [ '$scope',
   (scope)->

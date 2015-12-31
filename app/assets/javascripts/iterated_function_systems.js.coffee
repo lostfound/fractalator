@@ -12,7 +12,7 @@
 #= require evol.colorpicker
 #= require intense
 
-ifs =angular.module('ifs',["controllers", 'ngRoute', 'ngTurbolinks'])
+ifs =angular.module('ifs',["controllers"])
 ifs.directive 'convertToNumber', ->
   require: 'ngModel'
   link: (scope, element, attrs, ngModel)->
@@ -21,34 +21,7 @@ ifs.directive 'convertToNumber', ->
     ngModel.$formatters.push (val)->
       '' + val
 controllers = angular.module('controllers',[])
-controllers.controller("ifs_controller", [ '$scope',
-  (scope)->
-    s= scope
-    s.to_int= (num)->
-      parseInt num
-    s.depth = 8
-    s.flipX = false
-    s.flipY = false
-    s.extra_opts = false
-    s.angle = 0
-    s.apply = true
-    s.width = 0
-    s.height= 0
-    s.top   = 0
-    s.left  = 0
-    s.transformation = undefined
-    s.add_image_filter= ()->
-      s.transformation.image_filters||=[]
-      imf = {name: "#{s.new_image_filter}", on: true}
-      if prms = window.image_filters[imf.name].params
-        imf.params = JSON.parse JSON.stringify(prms)
-      s.transformation.image_filters.push imf
-      s.refuck()
-    s.rm_image_filter= (index)->
-      s.transformation.image_filters.splice(index,1)
-      s.refuck()
-  ])
-jQuery ->
+init= ->
   body=$ 'body'
   @ifs_scope = $('[ng-controller=ifs_controller]').scope()
     
@@ -242,4 +215,32 @@ jQuery ->
     @ifs_eng.render @c.getObjects(), true
 
 
+controllers.controller("ifs_controller", [ '$scope',
+  (scope)->
+    s= scope
+    s.to_int= (num)->
+      parseInt num
+    s.depth = 8
+    s.flipX = false
+    s.flipY = false
+    s.extra_opts = false
+    s.angle = 0
+    s.apply = true
+    s.width = 0
+    s.height= 0
+    s.top   = 0
+    s.left  = 0
+    s.transformation = undefined
+    s.add_image_filter= ()->
+      s.transformation.image_filters||=[]
+      imf = {name: "#{s.new_image_filter}", on: true}
+      if prms = window.image_filters[imf.name].params
+        imf.params = JSON.parse JSON.stringify(prms)
+      s.transformation.image_filters.push imf
+      s.refuck()
+    s.rm_image_filter= (index)->
+      s.transformation.image_filters.splice(index,1)
+      s.refuck()
+    init()
+  ])
   

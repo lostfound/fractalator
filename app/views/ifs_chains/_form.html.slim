@@ -2,7 +2,6 @@
 - IteratedFunctionSystem::SHAPES.each_with_index {|n,i| shapes<<{id: i, name: n}}
 
 #ifs_editor[
-  ng-app="ifs"
   ng-controller="ifs_chain_controller"
   ng-init="shapes=#{shapes.to_json}"
   data-pipeline="#{@fractal.pipeline.to_json}"

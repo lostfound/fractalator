@@ -15,18 +15,27 @@
 #= require foundation
 #= require turbolinks
 #= require angular
-#= require angular-route
-#= require angular-turbolinks
+#  require angular-route
+#  require angular-turbolinks
 #= require jquery_ujs
 #= require vendor/modernizr
 #= require jquery-hotkeys
 
+console.log "!"
 $(document).foundation()
 scroll_pos=null
 $(document).on 'page:load', ->
   if scroll_pos
     $(document).scrollTop scroll_pos
     scroll_pos = null
+
+$(document).on "page:load ready", ->
+  if $("[ng-controller]").length > 0
+    angular.bootstrap(document.body, ['ifs'])
+
+$(document).on "page:before-change", ->
+  for ngc in $("[ng-controller]")
+    $(ngc).scope().$broadcast("$destroy")
 
 jQuery ->
   $("body").off 'click', '.keepscroll'
@@ -37,11 +46,3 @@ jQuery ->
   if $("#main_section").height() + $("header").height() < $(window).height()
     $("footer").hide()
   window.modules = {}
-  #$('[ng-app]').each ->
-  #  module = $(@).attr('ng-app')
-  #  console.log angular.bootstrap(@, [module])
-  #window.frapp = angular.module "fractalator", []
-  ## See https://docs.angularjs.org/guide/bootstrap
-  ## http://stackoverflow.com/questions/14797935/using-angularjs-with-turbolinks#answer-15488920
-  #angular.bootstrap document, ["fractalator"]
-  #

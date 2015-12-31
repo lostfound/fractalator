@@ -13,7 +13,7 @@
 #= require evol.colorpicker
 #= require intense
 
-ifs =angular.module('ifs',["controllers", 'ngRoute', 'ngDraggable', 'ngTurbolinks'])
+ifs =angular.module('ifs',["controllers", 'ngDraggable'])
 ifs.directive 'convertToNumber', ->
   require: 'ngModel'
   link: (scope, element, attrs, ngModel)->

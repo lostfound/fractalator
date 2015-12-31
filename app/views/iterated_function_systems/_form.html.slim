@@ -1,7 +1,7 @@
 - shapes = []
 - IteratedFunctionSystem::SHAPES.each_with_index {|n,i| shapes<<{id: i, name: n}}
 
-#ifs_editor ng-app="ifs" ng-controller="ifs_controller" ng-init="shapes=#{shapes.to_json}"
+#ifs_editor ng-controller="ifs_controller" ng-init="shapes=#{shapes.to_json}"
   = form_for @fractal, html: {id: :ifs_form} do |f|
     .row
       .medium-2.small-4.column ng-init="base_shape=#{@fractal.base_shape}"

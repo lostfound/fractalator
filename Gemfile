@@ -25,7 +25,7 @@ gem 'jquery-rails'
 #gem 'turbolinks'
 gem 'turbolinks', :github => 'rails/turbolinks', :branch => 'master'
 
-gem "angular-turbolinks"
+#gem "angular-turbolinks"
 gem 'jquery-turbolinks'
 gem 'slim-rails'
 gem 'foundation-rails'

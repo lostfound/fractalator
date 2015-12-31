@@ -1,4 +1,4 @@
-.row ng-app="ifs" ng-controller="ifs_controller" ng-init="transforms=#{@fractal.transforms}; depth=#{@fractal.rec_number}; base_shape=#{@fractal.base_shape}"
+.row ng-controller="ifs_controller" ng-init="transforms=#{@fractal.transforms}; depth=#{@fractal.rec_number}; base_shape=#{@fractal.base_shape}"
   = render 'fractals/ifs_show_header'
   = render 'fractals/ifs_show_canvas'
   = render 'fractals/ifs_show_options', hr_depth: 5
