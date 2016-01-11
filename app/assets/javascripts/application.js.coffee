@@ -43,6 +43,6 @@ jQuery ->
     scroll_pos = $(document).scrollTop()
     true
   $(document).foundation()
-  if $("#main_section").height() + $("header").height() < $(window).height()
-    $("footer").hide()
+  #if $("#main_section").height() + $("header").height() < $(window).height()
+  #  $("footer").hide()
   window.modules = {}

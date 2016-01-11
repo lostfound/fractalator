@@ -8,6 +8,13 @@
     font-size: 1.2em
 body
   background-image: image-url('triangles_bg.png')
+  display: flex
+  height: 100% !important
+  flex-direction: column
+  .main-section
+    flex: 1 0 auto
+  header, footer
+    flex: none
 
 .fractals_on_login
   margin-top: 5rem
@@ -55,7 +62,7 @@ footer
   ul
     max-width: 16rem
 body
-  height: auto !important
+  //height: auto !important
   &.body_blocked
     width: 100% !important
     height: 100% !important
