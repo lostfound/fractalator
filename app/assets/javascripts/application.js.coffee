@@ -21,7 +21,6 @@
 #= require vendor/modernizr
 #= require jquery-hotkeys
 
-console.log "!"
 $(document).foundation()
 scroll_pos=null
 $(document).on 'page:load', ->

@@ -2,9 +2,9 @@ li: .fractal_preview.ifs data-id="#{fractal.id}"
   .title 
     .badge
     - if fractal.try(:repeats)
-      = "#{fractal.repeats}x #{fractal.name.capitalize}"
+      = "#{fractal.repeats}x #{fractal.name.to_s.titleize}"
     - else
-      = fractal.name.capitalize
+      = fractal.name.to_s.titleize
   .image
     - args = {}
     - if action_name == 'index' and params.has_key? :id

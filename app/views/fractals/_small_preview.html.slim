@@ -1,2 +1,2 @@
 li
-  = image_tag fractal.image_url, 'data-url' => "#{iterated_function_system_path fractal}", title: fractal.name
+  = image_tag fractal.image_url, 'data-url' => "#{iterated_function_system_path fractal}", title: fractal.name.to_s.titleize
