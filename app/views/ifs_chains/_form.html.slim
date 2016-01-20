@@ -25,6 +25,7 @@
     ul.small-block-grid-3.large-block-grid-8.medium-block-grid-6.pipeline
       li[
         ng-repeat="fractal in pipeline"
+        ng-class="{stopoint: fractal.selected, last: fractal.last}"
         ng-drop="true"
         ng-drop-success="on_drop($index, $data,$event)"]
         .preview[ng-drag="true" ng-drag-data="$index"]
@@ -52,7 +53,8 @@
         = f.label :name
         = f.text_field :name, autocomplete: 'off'
       .medium-2.small-4.columns ng-init="depth=#{@fractal.rec_number}"
-        = f.label :depth
+        = f.label :depth do
+           | Depth [{{ chain_length(pipeline) }}]
         = f.number_field :rec_number, 'ng-model' => 'depth' 
       .medium-4.small-8.columns
         = f.label :description

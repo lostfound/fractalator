@@ -6,9 +6,15 @@ class IfsChainRender extends IfsRenderer
     @queue.clear() #if redraw
     @rec=0 #if redraw
     i=0
+    ppl = ( fr for fr in pipeline when fr.repeats and fr.repeats > 0 )
+    for fr in pipeline
+      fr.selected = false
+    return if ppl.length == 0
     while i<@max_rec()
-      for fractal in pipeline
-        return unless i<@max_rec()
+      for fractal in ppl
+        unless i<@max_rec()
+          fractal.selected = true
+          return
         do (fractal)=>
           @queue.push ['t', 0 + @revision ], (on_done)=>
             @set_transforms(fractal.transforms)
@@ -17,7 +23,11 @@ class IfsChainRender extends IfsRenderer
             @queue.push 'h', (on_done)=>
               @heraks(on_done)
             i += 1
-            return unless i<@max_rec()
+            unless i<@max_rec()
+              fractal.selected = true
+              fractal.last = j == fractal.repeats - 1
+              return
+        return unless i<@max_rec()
       return if i == 0
 
   set_transforms: (rects)->
