@@ -2,7 +2,7 @@
 .large-6.medium-4.columns.ifs_shower_options
   = label_tag :max_rec do
     | Depth:
-  = number_field_tag :depth, @fractal.rec_number, "ng-model" => 'depth'
+  = number_field_tag :depth, @fractal.rec_number, "ng-model" => 'depth', min: 1
   = label_tag :timeout do
     | Timeout (ms)
   = number_field_tag :timeout, nil, 'ng-model' => 'timeout'
@@ -15,7 +15,7 @@
   ul.small-block-grid-2
     li :label
       | Depth
-      input type="number" ng-model="hr_depth" ng-init="hr_depth=depth+#{hr_depth}"
+      input type="number" ng-model="hr_depth" ng-init="hr_depth=depth+#{hr_depth}" min="1"
     li :label
       | Width
       input type="number" ng-model="hr_width"

@@ -40,7 +40,7 @@
             ]
             = fa_icon "times"
             span.name Delete
-        input.repeats type="number" ng-model="fractal.repeats"
+        input.repeats type="number" ng-model="fractal.repeats" min="0"
 
   / FORM
   = form_for @fractal, html: {id: :ifs_form} do |f|
@@ -55,7 +55,7 @@
       .medium-2.small-4.columns ng-init="depth=#{@fractal.rec_number}"
         = f.label :depth do
            | Depth [{{ chain_length(pipeline) }}]
-        = f.number_field :rec_number, 'ng-model' => 'depth' 
+        = f.number_field :rec_number, 'ng-model' => 'depth', min: 1
       .medium-4.small-8.columns
         = f.label :description
         = f.text_area :description
