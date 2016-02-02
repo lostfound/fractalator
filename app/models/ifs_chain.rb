@@ -5,7 +5,7 @@ class IfsChain < Fractal
   after_update :update_pipeline
   def pipeline
     unless @pipeline
-      @pipeline = parts.includes(:fractal).all.map do |part| 
+      @pipeline = parts.includes(:fractal).all.select {|part| part.fractal}.map do |part| 
         { transforms: JSON.parse(part.fractal.transforms, symbolize_names: true),
           repeats: part.repeats,
           ordernum: part.ordernum,
