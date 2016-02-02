@@ -34,7 +34,7 @@ class FractalsController < ApplicationController
     @can_i_like = Fractal.can_user_like current_user, @ancestors.ids+@children.map {|fr| fr.id}
     case @fractal
     when IfsChain
-      @dna = @fractal.parts.includes(:fractal).map {|part| part.fractal.repeats= part.repeats;part.fractal}
+      @dna = @fractal.parts.includes(:fractal).select {|part| part.fractal}.map {|part| part.fractal.repeats= part.repeats;part.fractal}
       @can_i_like.merge Fractal.can_user_like current_user, @dna.map {|fr| fr.id}
       @hrd = 0
       @angular_controller = 'ifs_chain_animation'
