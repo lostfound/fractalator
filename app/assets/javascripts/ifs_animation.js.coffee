@@ -2,6 +2,13 @@
 #= require fabric
 #= require ifs_chain_render
 #= require intense
+#= require jquery-ui/core
+#= require jquery-ui/widget
+#= require jquery-ui/mouse
+#= require jquery-ui/position
+#= require jquery-ui/button
+#
+#= require evol.colorpicker
 angular.module('ifs',["controllers"])
 controllers = angular.module('controllers',[])
 controllers.controller("custom_fractal", [ '$scope',
@@ -14,11 +21,14 @@ $(document).on 'page:change', ->
     ifs_eng.sepuka()
     ifs_eng = null
   first_skip = false
+
 controllers.controller("ifs_animation", [ '$scope',
   (scope)->
     localStorage.ifs_animation_timeout||=200
     localStorage.hr_width||=2000
     data = $("[data-json]").data('json')
+    $("#color").colorpicker()
+
     for k, v of data
       scope[k] = v
 
@@ -55,6 +65,7 @@ controllers.controller("ifs_animation", [ '$scope',
         tr.left = tr.left*scale_factor
         tr.top = tr.top*scale_factor
         transforms.push tr
+      @hdfs.set_bg_color $("#color").val()
       @hdfs.render transforms
       
 
@@ -79,6 +90,7 @@ controllers.controller("ifs_animation", [ '$scope',
 
 controllers.controller("ifs_chain_animation", [ '$scope',
   (scope)->
+    $("#color").colorpicker()
     localStorage.ifs_animation_timeout||=200
     localStorage.hr_width||=2000
     data = $("[data-json]").data('json')
@@ -108,6 +120,7 @@ controllers.controller("ifs_chain_animation", [ '$scope',
       $("##{args.canvas_id}").attr 'width', scope.hr_width
       $("##{args.canvas_id}").attr 'height', scope.hr_width
       @hdfs = new IfsChainRender args
+      @hdfs.set_bg_color $("#color").val()
       hr_pipeline = []
       for part in scope.pipeline
         transforms = []

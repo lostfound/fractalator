@@ -19,7 +19,12 @@
     li :label
       | Width
       input type="number" ng-model="hr_width"
-  .button ng-click="make_hr()" Make
+  ul.small-block-grid-2
+    li
+      .button ng-click="make_hr()" Make
+    li
+      input type="text" id="color" style="max-width:70px; display: inline;" value=""
+      
   /- unless @fractal.description.empty?
     .panel
       = markdown(@fractal.description).html_safe

@@ -132,6 +132,8 @@ class IfsRenderer
     @transformations = []
 
     @queue = new Queue
+  set_bg_color: (color)->
+    @bg_color = color
   sepuka: ->
     @queue.stop()
     @queue.clear()
@@ -272,7 +274,7 @@ class IfsRenderer
           ofiltered_objects.push oimg
         @images.push oimg
         @z.add oimg
-      @z.renderAll()
+      #@z.renderAll()
       Promise.all(ofiltered_objects.map @apply_filter).then (filtered_images)=>
         for oimg in @images
           @z.renderAll()
@@ -280,23 +282,38 @@ class IfsRenderer
           if @progress
             pp = 100.0*@rec/@max_rec()
             @progress.css {width: "#{pp}%"}
+          @after_promise(on_done)
         else
           @progress.css {width: "100%"} if @progress
-          if @dest_image
-            $(@dest_image).attr 'src', @jcanvas[0].toDataURL("image/png")
-          if @dest_input
-            $(@dest_input).val @jcanvas[0].toDataURL("image/png")
-          @rec=0
-          @z.renderAll()
-          @strip_queue()
-        if @scope.show_transf
-          @show_transf()
-        if @rec == 0 and @on_completed
-          @on_completed()
-        if on_done
-          if @scope.timeout
-            setTimeout (=> on_done()), parseInt @scope.timeout
+          if @bg_color
+            @z.setBackgroundColor @bg_color, =>
+              @z.renderAll()
+              if @dest_image
+                $(@dest_image).attr 'src', @jcanvas[0].toDataURL("image/png")
+              if @dest_input
+                $(@dest_input).val @jcanvas[0].toDataURL("image/png")
+              @rec=0
+              @z.renderAll()
+              @strip_queue()
+              @after_promise(on_done)
           else
-            on_done()
+            if @dest_image
+              $(@dest_image).attr 'src', @jcanvas[0].toDataURL("image/png")
+            if @dest_input
+              $(@dest_input).val @jcanvas[0].toDataURL("image/png")
+            @rec=0
+            @z.renderAll()
+            @strip_queue()
+            @after_promise(on_done)
+  after_promise: (on_done)->
+    if @scope.show_transf
+      @show_transf()
+    if @rec == 0 and @on_completed
+      @on_completed()
+    if on_done
+      if @scope.timeout
+        setTimeout (=> on_done()), parseInt @scope.timeout
+      else
+        on_done()
 window.IfsRenderer = IfsRenderer
 
