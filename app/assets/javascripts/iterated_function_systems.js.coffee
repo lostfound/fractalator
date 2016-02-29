@@ -44,7 +44,8 @@ init= ->
     if opts.top != 0
       opts.top||=100
 
-    opts.color||='#000'
+    unless opts.stroke_width
+      opts.color||='#000'
     opts.stroke = 'black'
     opts.cornerColor="black"
     opts.borderColor="black"
@@ -66,6 +67,7 @@ init= ->
       @ifs_scope.height= parseInt(tfm.scaleY*tfm.height)
       @ifs_scope.left  = tfm.left
       @ifs_scope.top   = tfm.top
+      @ifs_scope.stroke_width = tfm.stroke_width
 
   @ifs_scope.$watch 'transformation', (tfm, old) =>
     for prop in ['flipX', 'flipY']
@@ -90,6 +92,8 @@ init= ->
     rect = e.target
     # Color picker
     $("#color").colorpicker "val", rect.color
+    $("#stroke_color").colorpicker "val", rect.stroke_color
+    $("#stroke_color").val rect.stroke_color
 
   # Recursions
   @ifs_scope.$watch 'depth', (depth, old_value)=>
@@ -138,6 +142,12 @@ init= ->
     if @ifs_scope.apply and tfm = @ifs_scope.transformation
       tfm.set {originX: 'center', originY: 'center'}
       tfm.rotate value
+      @c.renderAll()
+      @ifs_eng.render (@c.getObjects())
+
+  @ifs_scope.$watch 'stroke_width', (value) =>
+    if tfm = @ifs_scope.transformation
+      tfm.stroke_width = value
       @c.renderAll()
       @ifs_eng.render (@c.getObjects())
 
@@ -194,6 +204,12 @@ init= ->
 
   # Color picker
   $("#color").colorpicker()# {parts: 'full', alpha: true, showOn: 'both', buttonColorize: true, showNoneButton: true}
+  $("#stroke_color").colorpicker()# {parts: 'full', alpha: true, showOn: 'both', buttonColorize: true, showNoneButton: true}
+  body.off "change", "#stroke_color"
+  body.on  "change.color", "#stroke_color", =>
+    if rect = @c.getActiveObject()
+      rect.stroke_color = $("#stroke_color").val()
+      @ifs_eng.render @c.getObjects(), true
   body.off "change", "#color"
   body.on  "change.color", "#color", =>
     if rect = @c.getActiveObject()

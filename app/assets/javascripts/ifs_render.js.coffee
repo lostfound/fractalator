@@ -23,7 +23,7 @@ class Queue
   push: (args, task)->
     @tasks.push({id: args, run: task})
 
-window.ifs_properties = ['width', 'height', 'left', 'top', 'scaleX', 'scaleY', 'angle', 'flipX', 'flipY', 'x', 'y', 'color', 'originX', 'originY', 'image_filters']
+window.ifs_properties = ['width', 'height', 'left', 'top', 'scaleX', 'scaleY', 'angle', 'flipX', 'flipY', 'x', 'y', 'color', 'originX', 'originY', 'image_filters', 'stroke_color', 'stroke_width']
 
 window.fobj_to_hash= (rect)->
   hash = {}
@@ -199,17 +199,21 @@ class IfsRenderer
   #  for prop in @properties
   #    hash[prop] = rect[prop]
   #  hash
-  first_image: (color, sid)->
-    @colors[sid]||={}
-    if img = @colors[sid][color]
-      return img
-    
-    @cicrle.set {'opacity': 0, fill: color}
-    @square.set {'opacity': 0, fill: color}
+  first_image: (color, sid, stroke_width, stroke_color, n)->
+    stroke_width||=0
+    unless stroke_width
+      color||="#000"
+    else
+      stroke_width = Math.min(stroke_width, @width/2-2)
+    prms ={'opacity': 0, fill: color, strokeWidth: stroke_width, stroke: stroke_color}
+    @cicrle.set prms
+    @square.set prms
+    @cicrle.set {radius: @width/2-stroke_width/2, left: 0, top: 0, opacity: 0}
+    @square.set {width: @width-stroke_width, height: @width-stroke_width, left: 0, top: 0, opacity: 0}
     shape = @baseshape()
     shape.set {opacity: 1}
     @z.renderAll()
-    @colors[sid][color] = @jcanvas[0].toDataURL("image/png")
+    @first_shapes[n]= @jcanvas[0].toDataURL("image/png")
 
   hide_tranforms: ->
     for transf in @transformations
@@ -235,21 +239,19 @@ class IfsRenderer
     @hide_tranforms()
     simgs=[]
     if @rec == 0
+      @first_shapes={}
       for image in @images
         image.remove()
       @images=[]
       @rendered_revision = @revision
-      @colors = {}
       sid = @shape_id()
-      for rect in @rects
-        continue unless rect.color
-        @first_image rect.color, sid
-      @first_image "#000", sid
+      for rect, i in @rects
+        @first_image rect.color, sid, rect.stroke_width, rect.stroke_color, i
 
       @cicrle.set {'opacity': 0}
       @square.set {'opacity': 0}
-      for rect in @rects
-        img = @colors[sid][rect.color]||@colors[sid]["#000"]
+      for rect, i in @rects
+        img = @first_shapes[i]
         simgs.push img
     else
       img = @jcanvas[0].toDataURL("image/png")

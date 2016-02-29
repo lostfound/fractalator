@@ -64,6 +64,7 @@ controllers.controller("ifs_animation", [ '$scope',
         scale_factor = scope.hr_width/400.0
         tr.left = tr.left*scale_factor
         tr.top = tr.top*scale_factor
+        tr.stroke_width = tr.stroke_width*scale_factor if tr.stroke_width
         transforms.push tr
       @hdfs.set_bg_color $("#color").val()
       @hdfs.render transforms

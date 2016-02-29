@@ -82,6 +82,13 @@
           li
             | Top
             input type="number" ng-model="top"
+        ul.small-block-grid-4 ng-show="extra_opts"
+          li
+            | Stroke Width
+            input type="number" ng-model="stroke_width"
+          li
+            | Color
+            input type="text" id="stroke_color" style="width:70px; display: inline;"
       /.ifs_preview
         == render 'svg', ifs: @fractal, r: 1, show_coords: true
         #mouse_handler
@@ -91,7 +98,7 @@
       .white
         img#fractal_image  style="border-color: black; border-style: dotted;"
         canvas#blackbird_fly width="400" height="400" style="border-color: black; border-style: dotted; display:none"
-      #image_filters ng-show="extra_opts"
+      #image_filters ng-show="extra_opts&&transformation"
         h4 Image Filters
         ul.inline-list
           li: select ng-model="new_image_filter"
