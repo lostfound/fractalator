@@ -36,7 +36,7 @@ init= ->
       opts = o
 
       #opts = o
-    opts||={width: 200, height: 200, left: 0, top: 0}
+    opts||={width: 200, height: 200, left: 100, top: 100}
     opts.originX ||= 'center'
     opts.originY ||= 'center'
     if opts.left != 0
