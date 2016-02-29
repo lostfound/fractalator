@@ -39,8 +39,11 @@ init= ->
     opts||={width: 200, height: 200, left: 0, top: 0}
     opts.originX ||= 'center'
     opts.originY ||= 'center'
-    opts.left||=100
-    opts.top||=100
+    if opts.left != 0
+      opts.left||=100
+    if opts.top != 0
+      opts.top||=100
+
     opts.color||='#000'
     opts.stroke = 'black'
     opts.cornerColor="black"
