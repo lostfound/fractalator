@@ -85,7 +85,7 @@
         ul.small-block-grid-4 ng-show="extra_opts"
           li
             | Stroke Width
-            input type="number" ng-model="stroke_width"
+            input type="number" ng-model="stroke_width" min="0" max="200"
           li
             | Color
             input type="text" id="stroke_color" style="width:70px; display: inline;"
