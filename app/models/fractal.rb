@@ -14,15 +14,17 @@ class Fractal < ActiveRecord::Base
   before_validation :strips
   scope :named, -> {where.not name: ''}
   scope :fresh, -> {order "created_at desc"}
+  scope :search, -> (nm) {nm.blank? ? all : where('lower(name) like ?', "%#{nm.downcase}%")}
 
   include Likeable
   #mount_uploader :image, FractalUploader
   mount_base64_uploader :image, FractalUploader
 
   
-  def self.typed
-    if name != 'Fractal'
-      where(type: name)
+  def self.typed(nm=nil)
+    nm||=name
+    if nm != 'Fractal'
+      where(type: nm)
     else
       all
     end
@@ -31,16 +33,16 @@ class Fractal < ActiveRecord::Base
     unless args[:user_id]
       case (args[:sort]||:cools).to_sym
       when :fresh
-        Fractal.typed.named.fresh.includes(:user)
+        named.fresh.includes(:user)
       else
-        Fractal.typed.named.likest.fresh.includes(:user)
+        named.likest.fresh.includes(:user)
       end
     else
       if args[:me].nil? or args[:me].id != args[:user_id].to_i
         @owner = User.find args[:user_id]
-        @owner.fractals.typed.named.fresh.includes(:user)
+        @owner.fractals.typed(name).named.fresh.includes(:user)
       else
-        args[:me].fractals.typed.fresh.includes(:user)
+        args[:me].fractals.typed(name).fresh.includes(:user)
       end
     end
   end

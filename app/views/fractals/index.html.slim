@@ -19,12 +19,18 @@
             | fresh
           dd.active = link_to smart_fractal_path('', sort: :cools) do
             | cools
-    li = paginate @fractals
+    li: ul.inline-list
+      li.pg = paginate @fractals
+      li
+         form action="#{request.path}"
+          .row.collapse
+            .small-8.columns
+              input name="s" value="#{params[:s].to_s}"
+            .small-4.columns
+              input.button.tiny type="submit" value="Search"
 /.row
 .gallery
  ul.small-block-grid-1.large-block-grid-4.medium-block-grid-3
   = render partial: 'fractals/preview', collection: @fractals, as: :fractal
  = paginate @fractals
-- content_for :scripts
-  = javascript_include_tag "ifs_index", "data-turbolinks-track" => true
 

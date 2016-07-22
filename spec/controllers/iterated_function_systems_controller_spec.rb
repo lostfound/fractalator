@@ -248,21 +248,21 @@ RSpec.describe IteratedFunctionSystemsController, type: :controller do
 
   #Is not Logged in
   describe "User is not logged in" do
-    describe "GET #index" do
-      it "redirects to login page" do
-        iterated_function_system = create :ifs, user: @user
-        get :index, {}, valid_session
-        expect(response).to redirect_to("/")
-      end
-    end
+    #describe "GET #index" do
+    #  it "redirects to login page" do
+    #    iterated_function_system = create :ifs, user: @user
+    #    get :index, {}, valid_session
+    #    expect(response).to redirect_to("/")
+    #  end
+    #end
 
-    describe "GET #show" do
-      it "redirects to login page" do
-        iterated_function_system = create :ifs
-        get :show, {:id => iterated_function_system.to_param}, valid_session
-        expect(response).to redirect_to("/")
-      end
-    end
+    #describe "GET #show" do
+    #  it "redirects to login page" do
+    #    iterated_function_system = create :ifs
+    #    get :show, {:id => iterated_function_system.to_param}, valid_session
+    #    expect(response).to redirect_to("/")
+    #  end
+    #end
 
     describe "GET #new" do
       it "redirects to login page" do

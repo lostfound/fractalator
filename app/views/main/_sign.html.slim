@@ -6,10 +6,10 @@
         '
         /= link_to user_omniauth_authorize_path(:vkontakte), class: [:button, :small]
           = fa_icon :vk
-        = link_to user_omniauth_authorize_path(:twitter), class: [:button, :smallbtn], style: "margin-right: 10px"
+        = link_to user_twitter_omniauth_authorize_path, class: [:button, :smallbtn], style: "margin-right: 10px"
           = fa_icon :twitter
           | twitter
-        = link_to user_omniauth_authorize_path(:tumblr), class: [:button, :smallbtn]
+        = link_to user_tumblr_omniauth_authorize_path, class: [:button, :smallbtn]
           = fa_icon :tumblr
           | tumblr
       .f

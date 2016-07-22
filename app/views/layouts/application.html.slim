@@ -13,8 +13,6 @@ html lang="en"
     = javascript_include_tag "application", "data-turbolinks-track" => true
     - if fractal = Fractal.likest.fresh.first
       = favicon_link_tag fractal.image_url
-    - if content_for? :scripts
-      = yield :scripts
 
     = csrf_meta_tags
 

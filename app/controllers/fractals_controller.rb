@@ -21,7 +21,7 @@ class FractalsController < ApplicationController
       uid = params[:id].to_i
     end
     @owner = uid.nil? ? nil : User.find(uid)
-    @fractals = glass.includes(:user).list( user_id: uid, me: current_user, sort: session[:sort]||'cools').page(page).per(PER_PAGE) 
+    @fractals = glass.includes(:user).list( user_id: uid, me: current_user, sort: session[:sort]||'cools').search(params[:s].to_s).page(page).per(PER_PAGE) 
     @can_i_like = Fractal.can_user_like current_user, @fractals.map {|f| f.id}
   end
 

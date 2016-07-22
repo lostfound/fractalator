@@ -1,4 +1,3 @@
-#= require ifs_render
 
 class IfsChainRender extends IfsRenderer
 

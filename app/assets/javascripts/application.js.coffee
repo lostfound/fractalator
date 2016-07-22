@@ -11,37 +11,41 @@
 # about supported directives.
 #
 #= require jquery2
-#= require jquery.turbolinks
 #= require foundation
 #= require turbolinks
 #= require angular
-#  require angular-route
-#  require angular-turbolinks
 #= require jquery_ujs
 #= require vendor/modernizr
 #= require jquery-hotkeys
+#
+#= require ngDraggable
+#= require ng
+#= require ifs_likes
+#= require fabric
+#
+#= require jquery-ui/core
+#= require jquery-ui/widget
+#= require jquery-ui/mouse
+#= require jquery-ui/position
+#= require jquery-ui/button
+#= require evol.colorpicker
+#= require intense
+#
+#= require ifs_render
+#= require ifs_animation
+#= require ifs_chain_render
+#= require ifs_chain_animation
+#= require iterated_function_systems
+#= require ifs_chain
 
-$(document).foundation()
 scroll_pos=null
-$(document).on 'page:load', ->
+$(document).on 'turbolinks:render', ->
   if scroll_pos
     $(document).scrollTop scroll_pos
     scroll_pos = null
 
-$(document).on "page:load ready", ->
-  if $("[ng-controller]").length > 0
-    angular.bootstrap(document.body, ['ifs'])
-
-$(document).on "page:before-change", ->
-  for ngc in $("[ng-controller]")
-    $(ngc).scope().$broadcast("$destroy")
-
-jQuery ->
-  $("body").off 'click', '.keepscroll'
-  $("body").on 'click', '.keepscroll', ->
-    scroll_pos = $(document).scrollTop()
-    true
-  $(document).foundation()
-  #if $("#main_section").height() + $("header").height() < $(window).height()
-  #  $("footer").hide()
-  window.modules = {}
+$("html").on 'click', '.keepscroll', ->
+  scroll_pos = $(document).scrollTop()
+  true
+$(document).foundation()
+window.modules = {}

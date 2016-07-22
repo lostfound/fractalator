@@ -1,29 +1,13 @@
-#= require ifs_likes
-#= require fabric
-#= require ifs_chain_render
-#= require intense
-#= require jquery-ui/core
-#= require jquery-ui/widget
-#= require jquery-ui/mouse
-#= require jquery-ui/position
-#= require jquery-ui/button
-#
-#= require evol.colorpicker
-angular.module('ifs',["controllers"])
-controllers = angular.module('controllers',[])
-controllers.controller("custom_fractal", [ '$scope',
-  (scope)->
-  ])
 first_skip=true
 ifs_eng = null
-$(document).on 'page:change', ->
-  if ifs_eng and not first_skip
-    ifs_eng.sepuka()
-    ifs_eng = null
-  first_skip = false
 
 controllers.controller("ifs_animation", [ '$scope',
   (scope)->
+    scope.$on '$destroy', ->
+      if ifs_eng and not first_skip
+        ifs_eng.sepuka()
+        ifs_eng = null
+      first_skip = false
     localStorage.ifs_animation_timeout||=200
     localStorage.hr_width||=2000
     data = $("[data-json]").data('json')

@@ -1,12 +1,3 @@
-#= require ifs_likes
-#= require fabric
-#= require ifs_chain_render
-#= require intense
-angular.module('ifs',["controllers"])
-controllers = angular.module('controllers',[])
-controllers.controller("custom_fractal", [ '$scope',
-  (scope)->
-  ])
 controllers.controller("ifs_chain_animation", [ '$scope',
   (scope)->
     localStorage.ifs_animation_timeout||=200

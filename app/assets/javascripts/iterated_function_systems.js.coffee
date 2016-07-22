@@ -1,26 +1,3 @@
-# Place all the behaviors and hooks related to the matching controller here.
-# All this logic will automatically be available in application.js.
-# You can use CoffeeScript in this file: http://coffeescript.org/
-#= require fabric
-#= require ifs_render
-#= require jquery-ui/core
-#= require jquery-ui/widget
-#= require jquery-ui/mouse
-#= require jquery-ui/position
-#= require jquery-ui/button
-#  require jquery-ui
-#= require evol.colorpicker
-#= require intense
-
-ifs =angular.module('ifs',["controllers"])
-ifs.directive 'convertToNumber', ->
-  require: 'ngModel'
-  link: (scope, element, attrs, ngModel)->
-    ngModel.$parsers.push (val)->
-      parseInt val
-    ngModel.$formatters.push (val)->
-      '' + val
-controllers = angular.module('controllers',[])
 init= ->
   body=$ 'body'
   @ifs_scope = $('[ng-controller=ifs_controller]').scope()

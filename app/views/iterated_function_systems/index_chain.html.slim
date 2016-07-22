@@ -17,4 +17,11 @@
           | fresh
         dd.active = link_to iterated_function_systems_path(sort: :cools, layout: :chain) do
           | cools
+    li: .row.collapse
+       form action="#{request.path}?layout=chain"
+        .row.collapse
+          .small-8.columns
+            input name="s" value="#{params[:s].to_s}"
+          .small-4.columns
+            input.button.tiny type="submit" value="Search"
 

@@ -1,28 +1,7 @@
 # Place all the behaviors and hooks related to the matching controller here.
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
-#= require fabric
-#= require ngDraggable
-#= require ifs_chain_render
-#= require jquery-ui/core
-#= require jquery-ui/widget
-#= require jquery-ui/mouse
-#= require jquery-ui/position
-#= require jquery-ui/button
-#  require jquery-ui
-#= require evol.colorpicker
-#= require intense
 
-ifs =angular.module('ifs',["controllers", 'ngDraggable'])
-ifs.directive 'convertToNumber', ->
-  require: 'ngModel'
-  link: (scope, element, attrs, ngModel)->
-    console.log element
-    ngModel.$parsers.push (val)->
-      parseInt val
-    ngModel.$formatters.push (val)->
-      '' + val
-controllers = angular.module('controllers',[])
 controllers.controller("ifs_chain_controller", [ '$scope',
   ($scope)->
     s=$scope
@@ -68,11 +47,13 @@ controllers.controller("ifs_chain_controller", [ '$scope',
       s.show_fractal_selector=true
 
     s.select_fractal= (fractal)->
+      repeats = 1
       if s.changed_fractal != undefined
+        repeats = s.pipeline[s.changed_fractal].repeats
         s.pipeline[s.changed_fractal] = fractal
       else
         s.pipeline.push fractal
-      fractal.repeats = 1
+      fractal.repeats = repeats
       s.on_change_pipeline()
       s.show_fractal_selector=false
       try
@@ -92,6 +73,11 @@ controllers.controller("ifs_chain_controller", [ '$scope',
     $('body').on  'click', '#available_fractals a', ->
       s.selector_url = $(@).attr 'href'
       $.get s.selector_url, null, (data)->
+        $('#available_fractals').replaceWith data
+      false
+    $('body').off 'submit', '#available_fractals form'
+    $('body').on  'submit', '#available_fractals form', ->
+      $.get $(@).attr("action"), $(@).serialize(), (data)->
         $('#available_fractals').replaceWith data
       false
     # watch
