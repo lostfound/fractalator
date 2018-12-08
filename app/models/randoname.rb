@@ -1,4 +1,4 @@
-class Randoname < ActiveRecord::Base
+class Randoname < ApplicationRecord
   belongs_to :user
   before_create :gen_names
   def get_names

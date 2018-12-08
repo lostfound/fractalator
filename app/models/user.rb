@@ -1,4 +1,4 @@
-class User < ActiveRecord::Base
+class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
@@ -21,12 +21,12 @@ class User < ActiveRecord::Base
     false
   end
 
-  validates :email, uniqueness: { case_sensitive: false }, unless: 'email.nil?'
-  validates :url,   uniqueness: {scope: :provider}, if: 'email.blank?'
-  validates :url,   presence: true, if: 'email.blank?'
+  validates :email, uniqueness: { case_sensitive: false }, unless: -> {email.nil?}
+  validates :url,   uniqueness: {scope: :provider}, if: -> {email.blank?}
+  validates :url,   presence: true, if: ->{email.blank?}
   validates :name,  length: {maximum: 300}
   validates :email,  length: {maximum: 150}
-  validate  :name_must_be_random, if: 'name_changed?', on: :update
+  validate  :name_must_be_random, if: -> {name_changed?}, on: :update
 
 
   def self.find_for_tumblr_oauth access_token

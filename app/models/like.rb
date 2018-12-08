@@ -1,4 +1,4 @@
-class Like < ActiveRecord::Base
+class Like < ApplicationRecord
   belongs_to :likeable, polymorphic: true
   belongs_to :user
   validates :user, presence: true

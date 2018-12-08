@@ -1,4 +1,4 @@
-class Fractal < ActiveRecord::Base
+class Fractal < ApplicationRecord
 
   belongs_to :user
   belongs_to :parent, class_name: 'Fractal', foreign_key: :parent_id
@@ -6,7 +6,7 @@ class Fractal < ActiveRecord::Base
   before_destroy :change_children_parent
   #validates :name,  presence: true, allow_blank: false
   validates :rec_number, numericality: {greater_than: 0}
-  validates :parent, presence: true, unless: 'parent_id.nil?'
+  validates :parent, presence: true, unless: -> {parent_id.nil?}
   validate  :parent_cannot_be_me
   validate  :name_must_be_ascii_only
   validates :name, length: {maximum: 45}

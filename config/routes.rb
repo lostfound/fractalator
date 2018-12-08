@@ -1,4 +1,5 @@
-Fractalator::Application.routes.draw do
+#Fractalator::Application.routes.draw do
+Rails.application.routes.draw do
   Rails.application.routes.default_url_options[:host] = 'fractalator.com'
 
   %i[fractals iterated_function_systems ifs_chains].each do |controller|

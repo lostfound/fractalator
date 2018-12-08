@@ -1,4 +1,4 @@
-class Part < ActiveRecord::Base
+class Part < ApplicationRecord
   belongs_to :fractal
   belongs_to :chain, class_name: :Fractal
   validates  :fractal, :chain, presence: true
